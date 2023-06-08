@@ -30,10 +30,6 @@ class MainActivity : ComponentActivity() {
         // Create a Handler associated with the HandlerThread
         val handler = Handler(handlerThread.looper)
 
-        val quickJSEngine = QuickJsEngine(applicationContext)
-        quickJSEngine.init()
-        val script = quickJSEngine.getScriptFromAsset("asset:/sonic.js")
-
         setContent {
             QuickJSTheme {
                 // A surface container using the 'background' color from the theme
@@ -45,11 +41,27 @@ class MainActivity : ComponentActivity() {
                     Button(onClick = {
                         // Post a task to the Handler to run on the HandlerThread
                         handler.post {
+                            // v8
+                            val hippyJsInitStart = System.currentTimeMillis()
+                            val hippyJsEngine = HippyJsEngine(applicationContext)
+                            hippyJsEngine.init()
+                            val hippyJsInitEnd = System.currentTimeMillis()
+                            Log.i(TAG, "v8 init cost: ${hippyJsInitEnd - hippyJsInitStart}ms")
+
+                            // quickjs
+                            val quickJsInitStart = System.currentTimeMillis()
+                            val quickJSEngine = QuickJsEngine(applicationContext)
+                            quickJSEngine.init()
+                            val quickJsInitEnd = System.currentTimeMillis()
+                            Log.i(TAG, "quickjs init cost: ${quickJsInitEnd - quickJsInitStart}ms")
+
+                            val script = quickJSEngine.getScriptFromAsset("asset:/sonic.js")
+
                             val bytes = quickJSEngine.getJsContext().compileJsToBytecode(script)
                             val startTime = System.currentTimeMillis()
-                            Log.i(TAG,"start: $startTime")
                             quickJSEngine.getJsContext().evaluateBytecode(bytes)
-                            Log.i(TAG, "end, cost: ${System.currentTimeMillis() - startTime}ms")
+                            Log.i(TAG, "quickjs eval, cost: ${System.currentTimeMillis() - startTime}ms")
+
                         }
                     }) {
                         Text("Click Me")

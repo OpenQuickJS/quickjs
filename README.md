@@ -168,6 +168,22 @@ try (JSRuntime runtime = quickJS.createJSRuntime()) {
 }
 ```
 
+## Benchmark
+
+| Engine | v8   | QuickJS (Bytecode Mode) |
+| :-: | :-: | :-: |
+| init   | 30ms | 14ms                    |
+| eval   | 29ms | 47ms                    |
+| total  | 59ms | 61ms                    |
+
+- Device: Huawei P30 Pro (Kirin 980), Android 10.
+- Test JavaScript File: `asset:/sonic.js` (189 KB).
+
+### Conclusion
+
+1. Even when operating in bytecode mode, QuickJS's evaluation time is notably higher than V8's, and this disparity intensifies as the JavaScript file size increases.
+2. QuickJS's initialization time is slightly lower than V8's, and this advantage is constant despite of file sizes.
+
 ## Concept
 
 QuickJS Android uses the similar APIs to QuickJS.

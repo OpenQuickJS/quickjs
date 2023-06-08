@@ -50,8 +50,6 @@ class QuickJsEngine(private val context: Context) {
     }
 
     fun init() {
-        val start = System.currentTimeMillis()
-        Log.i(TAG, "init: start at $start")
         val quickJS = QuickJS.Builder().build()
         try {
             jsRuntime = quickJS.createJSRuntime()
@@ -67,7 +65,6 @@ class QuickJsEngine(private val context: Context) {
             Log.e(TAG, "init: failed to create js context", e)
             return
         }
-        Log.i(TAG, "init: quick js init succeed, cost=${System.currentTimeMillis() - start}")
     }
 
     fun getJsContext(): JSContext {
