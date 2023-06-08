@@ -1,7 +1,6 @@
 package com.shiqi.testquickjs
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,7 +10,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.shiqi.quickjs.QuickJS
 import com.shiqi.testquickjs.ui.theme.QuickJSTheme
 
 class MainActivity : ComponentActivity() {
@@ -20,9 +18,11 @@ class MainActivity : ComponentActivity() {
 
         val quickJSEngine = QuickJsEngine(baseContext)
         quickJSEngine.init()
-        quickJSEngine.runJsFile("asset:/JsEngineSonicBridge.js", true)
-        quickJSEngine.runJsFile("asset:/sonic.js", true)
-        quickJSEngine.runJsFile("asset:/test.js", true)
+        quickJSEngine.runJsFileFromAsset("asset:/JsEngineSonicBridge.js")
+        quickJSEngine.runJsFileFromAsset("asset:/sonic.kbc1")
+        quickJSEngine.runJsFileFromAsset("asset:/test.kbc1")
+        quickJSEngine.runJsFileFromAsset("asset:/sonic.js")
+        // quickJSEngine.runJsFileFromAsset("asset:/test.js")
 
         setContent {
             QuickJSTheme {

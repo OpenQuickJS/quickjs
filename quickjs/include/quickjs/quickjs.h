@@ -758,6 +758,7 @@ JSValue JS_CallConstructor2(JSContext* ctx, JSValueConst func_obj, JSValueConst 
 JS_BOOL JS_DetectModule(const char* input, size_t input_len);
 /* 'input' must be zero terminated i.e. input[input_len] = '\0'. */
 JSValue JS_Eval(JSContext* ctx, const char* input, size_t input_len, const char* filename, int eval_flags);
+JSValue JS_EvalBytecode(JSContext* ctx, const uint8_t *buf, size_t buf_len);
 /* same as JS_Eval() but with an explicit 'this_obj' parameter */
 JSValue JS_EvalThis(JSContext* ctx, JSValueConst this_obj, const char* input, size_t input_len, const char* filename, int eval_flags);
 JSValue JS_GetGlobalObject(JSContext* ctx);

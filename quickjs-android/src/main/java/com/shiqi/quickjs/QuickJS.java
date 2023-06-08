@@ -168,5 +168,7 @@ public class QuickJS {
   static native long getGlobalObject(long context);
 
   static native long evaluate(long context, String sourceCode, String fileName, int flags);
+
+  static native void evaluateBytecode(long context, byte[] bytecode, int flags);
   static native int executePendingJob(long context);
 }

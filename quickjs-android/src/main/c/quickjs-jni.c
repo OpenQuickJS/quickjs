@@ -1153,6 +1153,32 @@ Java_com_shiqi_quickjs_QuickJS_evaluate(
     return (jlong) result;
 }
 
+JNIEXPORT void JNICALL
+Java_com_shiqi_quickjs_QuickJS_evaluateBytecode(
+    JNIEnv *env,
+    jclass __unused clazz,
+    jlong context,
+    jbyteArray bytecode
+) {
+    JSContext *ctx = (JSContext *) context;
+    CHECK_NULL(env, ctx, MSG_NULL_JS_CONTEXT);
+    CHECK_NULL(env, bytecode, "Null bytecode");
+
+    uint8_t *buf = NULL;
+    jsize buf_len = 0;
+
+    buf = (uint8_t *)(*env)->GetByteArrayElements(env, bytecode, NULL);
+    buf_len = (*env)->GetArrayLength(env, bytecode);
+
+    if (buf != NULL) {
+        JS_EvalBytecode(ctx, buf, buf_len);
+    }
+
+    if (buf != NULL) {
+        (*env)->ReleaseByteArrayElements(env, bytecode, (jbyte *)buf, 0);
+    }
+}
+
 JNIEXPORT jint JNICALL
 Java_com_shiqi_quickjs_QuickJS_executePendingJob(JNIEnv *env, jclass clazz, jlong context) {
     JSContext *ctx = (JSContext *) context;

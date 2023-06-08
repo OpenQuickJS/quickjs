@@ -100,6 +100,13 @@ public class JSContext implements Closeable {
   }
 
   /**
+   * Evaluates the bytecode in this JSContext.
+   */
+  public void evaluateBytecode(byte[] bytecode) {
+    evaluateBytecodeInternal(bytecode, 0, null);
+  }
+
+  /**
    * Evaluates the script in this JSContext.
    *
    * @param type must be one of {@link #EVAL_TYPE_GLOBAL} and {@link #EVAL_TYPE_MODULE}
@@ -167,6 +174,35 @@ public class JSContext implements Closeable {
       checkClosed();
 
       long value = QuickJS.evaluate(pointer, script, fileName, type | flags);
+
+      if (adapter != null) {
+        JSValue jsValue = wrapAsJSValue(value);
+        return adapter.fromJSValue(this, jsValue);
+      } else {
+        // Only check exception
+        try {
+          if (QuickJS.getValueTag(value) == TYPE_EXCEPTION) {
+            throw new JSEvaluationException(QuickJS.getException(pointer));
+          }
+        } finally {
+          QuickJS.destroyValue(pointer, value);
+        }
+        return null;
+      }
+    }
+  }
+
+  private <T> T evaluateBytecodeInternal(byte[] bytecode, int flags, @Nullable TypeAdapter<T> adapter) {
+    if ((flags & (~EVAL_FLAG_MASK)) != 0) {
+      throw new IllegalArgumentException("Invalid flags: " + flags);
+    }
+
+    synchronized (jsRuntime) {
+      checkClosed();
+
+      QuickJS.evaluateBytecode(pointer, bytecode, flags);
+
+      long value = QuickJS.getGlobalObject(pointer);
 
       if (adapter != null) {
         JSValue jsValue = wrapAsJSValue(value);

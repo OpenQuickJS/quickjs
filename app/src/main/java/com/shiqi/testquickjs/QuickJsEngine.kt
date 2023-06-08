@@ -71,34 +71,49 @@ class QuickJsEngine(private val context: Context) {
     }
 
     /**
-     * 执行 JS 脚本的方法实现
-     * @param jsFilePath JS 脚本文件的目录
-     * @param isAssetFile 是否为 Asset 目录中的文件
-     * @param
+     * Executes a JS script or bytecode file.
+     * @param filePath JS script or bytecode file directory.
      */
-    fun runJsFile(jsFilePath: String, isAssetFile: Boolean) {
-        Log.i(TAG, "runJsFile: jsFilePath=$jsFilePath")
-        val script = if (isAssetFile || jsFilePath.startsWith(URI_SCHEME_ASSETS)) {
-            loadScriptFromAsset(jsFilePath)
+    fun runJsFileFromAsset(filePath: String) {
+        Log.i(TAG, "runFile: filePath=$filePath")
+        val isBytecode = filePath.endsWith(".kbc1")
+
+        if (isBytecode) {
+            val bytecode = loadBytecodeFromAsset(filePath)
+            if (bytecode == null || bytecode.isEmpty()) {
+                Log.e(TAG, "runFile: bytecode is null or empty")
+                return
+            }
+            val start = System.currentTimeMillis()
+            Log.i(TAG, "runFile: start at $start")
+            try {
+                jsContext.evaluateBytecode(bytecode)
+                Log.i(TAG, "runFile: run bytecode finished")
+            } catch (e: Throwable) {
+                Log.e(TAG, "runFile: failed to run bytecode", e)
+            } finally {
+                val currentTime = System.currentTimeMillis()
+                Log.i(TAG, "runFile: currentTime: ${currentTime}, cost ${currentTime - start} ms")
+            }
         } else {
-            loadScriptFromFile(jsFilePath)
-        }
-        if (script.isNullOrEmpty()) {
-            Log.e(TAG, "runJsFile: script is null or empty")
-            return
-        }
-        val start = System.currentTimeMillis()
-        Log.i(TAG, "runJsFile: start at $start")
-        if (jsFilePath.contains("source")) {
-            Log.i(TAG, "runJsFile: ${script.length}")
-        }
-        try {
-            jsContext.evaluate(script, "file.js")
-            Log.i(TAG, "runJsFile: run js finished")
-        } catch (e: Throwable) {
-            Log.e(TAG, "runJsFile: failed to run js", e)
-        } finally {
-            Log.i(TAG, "runJsFile: cost ${System.currentTimeMillis() - start} ms")
+            val script = loadScriptFromAsset(filePath)
+            if (script.isNullOrEmpty()) {
+                Log.e(TAG, "runFile: script is null or empty")
+                return
+            }
+            val start = System.currentTimeMillis()
+            Log.i(TAG, "runFile: start at $start")
+            if (filePath.contains("source")) {
+                Log.i(TAG, "runFile: ${script.length}")
+            }
+            try {
+                jsContext.evaluate(script, "file.js")
+                Log.i(TAG, "runFile: run js finished")
+            } catch (e: Throwable) {
+                Log.e(TAG, "runFile: failed to run js", e)
+            } finally {
+                Log.i(TAG, "runFile: cost ${System.currentTimeMillis() - start} ms")
+            }
         }
     }
 
@@ -160,6 +175,33 @@ class QuickJsEngine(private val context: Context) {
                 return String(buffer, Charsets.UTF_8)
             } catch (e: IOException) {
                 Log.e(TAG, "loadScriptFromAsset: failed to load", e)
+                return null
+            }
+        }
+    }
+
+    /**
+     * Loads bytecode from an asset.
+     * @param fileName File name.
+     */
+    private fun loadBytecodeFromAsset(fileName: String): ByteArray? {
+        val start = System.currentTimeMillis()
+        Log.i(TAG, "loadBytecodeFromAsset: start at $start")
+        return if (!fileName.startsWith(URI_SCHEME_ASSETS)) {
+            Log.e(TAG, "loadBytecodeFromAsset: failed to load bytecode from asset")
+            null
+        } else {
+            val realFileName = fileName.replaceFirst(URI_SCHEME_ASSETS, "")
+                .replaceFirst(File.separator, "")
+            try {
+                val inputStream = context.assets.open(realFileName)
+                val buffer = ByteArray(inputStream.available())
+                inputStream.read(buffer)
+                inputStream.close()
+                Log.i(TAG, "loadBytecodeFromAsset: end cost ${System.currentTimeMillis() - start}ms")
+                return buffer
+            } catch (e: IOException) {
+                Log.e(TAG, "loadBytecodeFromAsset: failed to load", e)
                 return null
             }
         }

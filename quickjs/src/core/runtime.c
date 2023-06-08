@@ -3131,6 +3131,31 @@ JSValue JS_Eval(JSContext* ctx, const char* input, size_t input_len, const char*
   return JS_EvalThis(ctx, ctx->global_obj, input, input_len, filename, eval_flags);
 }
 
+JSValue JS_EvalBytecode(JSContext* ctx, const uint8_t *buf, size_t buf_len) {
+    JSValue obj, val;
+
+    // Read bytecode object from buffer
+    obj = JS_ReadObject(ctx, buf, buf_len, JS_READ_OBJ_BYTECODE);
+    
+    // If reading bytecode failed, throw a type error
+    if (JS_IsException(obj))
+        return JS_ThrowTypeError(ctx, "Failed to read bytecode object");
+
+    // Evaluate the bytecode function
+    val = JS_EvalFunction(ctx, obj);
+    
+    // If evaluating the bytecode function failed, throw a type error
+    if (JS_IsException(val)) {
+        JS_FreeValue(ctx, obj);
+        return JS_ThrowTypeError(ctx, "Failed to evaluate bytecode function");
+    }
+    
+    // Free the memory allocated for bytecode object
+    JS_FreeValue(ctx, obj);
+
+    return val;
+}
+
 JSValue JS_EvalFunctionInternal(JSContext* ctx, JSValue fun_obj, JSValueConst this_obj, JSVarRef** var_refs, JSStackFrame* sf) {
   JSValue ret_val;
   uint32_t tag;
