@@ -100,7 +100,7 @@ class QuickJsEngine(private val context: Context) {
                 Log.i(TAG, "runFile: currentTime: ${currentTime}, cost ${currentTime - start} ms")
             }
         } else {
-            val script = loadScriptFromAsset(filePath)
+            val script = getScriptFromAsset(filePath)
             if (script.isNullOrEmpty()) {
                 Log.e(TAG, "runFile: script is null or empty")
                 return
@@ -163,7 +163,7 @@ class QuickJsEngine(private val context: Context) {
      * 从 Asset 中加载 JS 脚本内容
      * @param fileName 文件名
      */
-    private fun loadScriptFromAsset(fileName: String): String? {
+    fun getScriptFromAsset(fileName: String): String? {
         val start = System.currentTimeMillis()
         Log.i(TAG, "loadScriptFromAsset: start at $start")
         return if (!fileName.startsWith(URI_SCHEME_ASSETS)) {
