@@ -1,4 +1,4 @@
-package com.kugou.quickjs.ui.theme
+package com.shiqi.testquickjs.ui.theme
 
 import android.app.Activity
 import android.os.Build

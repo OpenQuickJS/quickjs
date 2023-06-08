@@ -1,4 +1,4 @@
-package com.kugou.quickjs
+package com.shiqi.testquickjs
 
 import org.junit.Test
 
