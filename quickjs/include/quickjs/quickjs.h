@@ -714,6 +714,7 @@ JS_BOOL JS_SetConstructorBit(JSContext *ctx, JSValueConst func_obj, JS_BOOL val)
 
 JSValue JS_NewArray(JSContext *ctx);
 int JS_IsArray(JSContext *ctx, JSValueConst val);
+int JS_IsArrayBuffer(JSContext *ctx, JSValueConst val);
 
 typedef struct InlineCache InlineCache;
 JSValue JS_GetPropertyInternal(JSContext* ctx, JSValueConst obj, JSAtom prop, JSValueConst receiver, InlineCache *ic, JS_BOOL throw_ref_error);

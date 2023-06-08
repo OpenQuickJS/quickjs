@@ -18,23 +18,11 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val quickJS = QuickJS.Builder().build()
-        quickJS.createJSRuntime().use { runtime ->
-            runtime.createJSContext().use { context ->
-                val script1 = "" +
-                        "function fibonacci(n) {" +
-                        "  if (n == 0 || n == 1) return n;" +
-                        "  return fibonacci(n - 1) + fibonacci(n - 2);" +
-                        "}"
-                // Evaluate a script without return value
-                context.evaluate(script1, "fibonacci.js")
-                val script2 = "fibonacci(10);"
-                // Evaluate a script with return value
-                val result =
-                    context.evaluate(script2, "fibonacci.js", Int::class.javaPrimitiveType)
-                Log.i("QuickJs", "result $result") // 55
-            }
-        }
+        val quickJSEngine = QuickJsEngine(baseContext)
+        quickJSEngine.init()
+        quickJSEngine.runJsFile("asset:/JsEngineSonicBridge.js", true)
+        quickJSEngine.runJsFile("asset:/sonic.js", true)
+        quickJSEngine.runJsFile("asset:/test.js", true)
 
         setContent {
             QuickJSTheme {

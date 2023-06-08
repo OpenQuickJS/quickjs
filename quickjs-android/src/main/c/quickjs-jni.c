@@ -47,6 +47,18 @@ Java_com_shiqi_quickjs_QuickJS_setRuntimeMallocLimit(
     JS_SetMemoryLimit(qj_rt->rt, (size_t) malloc_limit);
 }
 
+JNIEXPORT void JNICALL
+Java_com_shiqi_quickjs_QuickJS_setRuntimeMaxStackSize(
+        JNIEnv *env,
+        jclass __unused clazz,
+        jlong runtime,
+        jint stack_size
+) {
+    QJRuntime *qj_rt = (QJRuntime *) runtime;
+    CHECK_NULL(env, qj_rt, MSG_NULL_JS_RUNTIME);
+    JS_SetMaxStackSize(qj_rt->rt, (size_t) stack_size);
+}
+
 static int on_interrupt(JSRuntime __unused *rt, void *opaque) {
     int result = 0;
 
@@ -651,6 +663,20 @@ Java_com_shiqi_quickjs_QuickJS_isValueArray(
     JSValue *val = (JSValue *) value;
     CHECK_NULL_RET(env, val, MSG_NULL_JS_VALUE);
     return (jboolean) JS_IsArray(ctx, *val);
+}
+
+JNIEXPORT jboolean JNICALL
+Java_com_shiqi_quickjs_QuickJS_isValueArrayBuffer(
+        JNIEnv *env,
+        jclass __unused clazz,
+        jlong context,
+        jlong value
+) {
+    JSContext *ctx = (JSContext *) context;
+    CHECK_NULL_RET(env, ctx, MSG_NULL_JS_CONTEXT);
+    JSValue *val = (JSValue *) value;
+    CHECK_NULL_RET(env, val, MSG_NULL_JS_VALUE);
+    return (jboolean) JS_IsArrayBuffer(ctx, *val);
 }
 
 JNIEXPORT jboolean JNICALL
