@@ -1,4 +1,4 @@
-[submodule "quickjs/vendor/mimalloc"]
+[submodule mimalloc"]
 	path = quickjs/vendor/mimalloc
 	url = https://github.com/microsoft/mimalloc.git
-	branch = v1.7.9
+	branch = v2.1.2
