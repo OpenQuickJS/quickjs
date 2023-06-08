@@ -2,13 +2,10 @@
 
 > Self-maintained QuickJS Android Bindings.
 
-## Build
+## Download
 
-```bash
-git clone --recurse-submodules https://github.com/shiqimei/quickjs-android.git
-```
-
-Open the folder `quickjs-android` in Android Studio.
+1. Download latest `.aar` from [release](https://github.com/shiqimei/quickjs-android/releases) page.
+2. In Android Studio: `File > New > New Module > Import .JAR/.AAR Package`, locate `.aar`, click `Finish`.
 
 ## Usage
 
@@ -35,6 +32,14 @@ try (JSRuntime runtime = quickJS.createJSRuntime()) {
 ```
 
 See [Usages](./Usages.md) for advanced usages.
+
+## Develop
+
+```bash
+git clone --recurse-submodules https://github.com/shiqimei/quickjs-android.git
+```
+
+Open the folder `quickjs-android` in Android Studio.
 
 ## Benchmark
 
