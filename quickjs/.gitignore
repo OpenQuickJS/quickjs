@@ -1,0 +1,13 @@
+build
+bin
+.idea
+.vscode
+lib
+cmake-build-*
+perf.*
+build
+*.expand
+*.svg
+test262_errors.txt
+test262_report.txt
+test262
