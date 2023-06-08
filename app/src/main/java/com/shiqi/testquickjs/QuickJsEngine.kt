@@ -70,6 +70,10 @@ class QuickJsEngine(private val context: Context) {
         Log.i(TAG, "init: quick js init succeed, cost=${System.currentTimeMillis() - start}")
     }
 
+    fun getJsContext(): JSContext {
+        return jsContext
+    }
+
     /**
      * Executes a JS script or bytecode file.
      * @param filePath JS script or bytecode file directory.
@@ -101,13 +105,14 @@ class QuickJsEngine(private val context: Context) {
                 Log.e(TAG, "runFile: script is null or empty")
                 return
             }
+            val bytes = jsContext.compileJsToBytecode(script)
             val start = System.currentTimeMillis()
             Log.i(TAG, "runFile: start at $start")
             if (filePath.contains("source")) {
                 Log.i(TAG, "runFile: ${script.length}")
             }
             try {
-                jsContext.evaluate(script, "file.js")
+                jsContext.evaluateBytecode(bytes)
                 Log.i(TAG, "runFile: run js finished")
             } catch (e: Throwable) {
                 Log.e(TAG, "runFile: failed to run js", e)

@@ -55,6 +55,16 @@
 #include "parser.h"
 #include "shape.h"
 
+#ifndef NODE_GYP
+#include <android/log.h>
+#define  LOG_TAG    "QuickJs"
+#define  ALOGI(...)  __android_log_print(ANDROID_LOG_INFO, LOG_TAG,__VA_ARGS__)
+#define  ALOGE(...)  __android_log_print(ANDROID_LOG_ERROR, LOG_TAG,__VA_ARGS__)
+#else
+#define  ALOGI(...)  ((void)0)
+#define  ALOGE(...)  ((void)0)
+#endif
+
 static const JSClassExoticMethods js_arguments_exotic_methods = {
     .define_own_property = js_arguments_define_own_property,
 };
@@ -1191,7 +1201,7 @@ void build_backtrace(JSContext* ctx, JSValueConst error_obj, const char* filenam
         if (column_num != -1) {
           column_num += 1;
         }
-        
+
         if (latest_line_num == -1) {
           latest_line_num = line_num;
         }
@@ -1235,25 +1245,25 @@ done:
 
   if (line_num != -1) {
     JS_DefinePropertyValue(
-      ctx, 
-      error_obj, 
-      JS_ATOM_lineNumber, 
-      JS_NewInt32(ctx, latest_line_num), 
+      ctx,
+      error_obj,
+      JS_ATOM_lineNumber,
+      JS_NewInt32(ctx, latest_line_num),
       JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE
     );
 
     if (column_num != -1) {
-      /** 
-       * do not add the corresponding definition 
-       * in the 'quickjs-atom.h' file, it will lead to 
+      /**
+       * do not add the corresponding definition
+       * in the 'quickjs-atom.h' file, it will lead to
        * inaccurate diff positions of the atom table
        */
       int atom = JS_NewAtom(ctx, "columnNumber");
       JS_DefinePropertyValue(
-        ctx, 
-        error_obj, 
-        atom, 
-        JS_NewInt32(ctx, latest_column_num), 
+        ctx,
+        error_obj,
+        atom,
+        JS_NewInt32(ctx, latest_column_num),
         JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE
       );
       JS_FreeAtom(ctx, atom);
@@ -3136,20 +3146,23 @@ JSValue JS_EvalBytecode(JSContext* ctx, const uint8_t *buf, size_t buf_len) {
 
     // Read bytecode object from buffer
     obj = JS_ReadObject(ctx, buf, buf_len, JS_READ_OBJ_BYTECODE);
-    
+
     // If reading bytecode failed, throw a type error
-    if (JS_IsException(obj))
-        return JS_ThrowTypeError(ctx, "Failed to read bytecode object");
+    if (JS_IsException(obj)) {
+      ALOGE("Failed to read bytecode object");
+      return JS_ThrowTypeError(ctx, "Failed to read bytecode object");
+    }
 
     // Evaluate the bytecode function
     val = JS_EvalFunction(ctx, obj);
-    
+
     // If evaluating the bytecode function failed, throw a type error
     if (JS_IsException(val)) {
-        JS_FreeValue(ctx, obj);
-        return JS_ThrowTypeError(ctx, "Failed to evaluate bytecode function");
+       JS_FreeValue(ctx, obj);
+       ALOGE("Failed to evaluate bytecode function");
+       return JS_ThrowTypeError(ctx, "Failed to evaluate bytecode function");
     }
-    
+
     // Free the memory allocated for bytecode object
     JS_FreeValue(ctx, obj);
 

@@ -17,6 +17,8 @@
 
 package com.shiqi.quickjs;
 
+import android.util.Log;
+
 import androidx.annotation.Nullable;
 
 import java.io.Closeable;
@@ -69,6 +71,7 @@ public class JSContext implements Closeable {
   final QuickJS quickJS;
   final JSRuntime jsRuntime;
   private final NativeCleaner<JSValue> cleaner;
+  private static final String TAG = "QuickJs JSContext";
 
   JSContext(long pointer, QuickJS quickJS, JSRuntime jsRuntime) {
     this.pointer = pointer;
@@ -104,6 +107,16 @@ public class JSContext implements Closeable {
    */
   public void evaluateBytecode(byte[] bytecode) {
     evaluateBytecodeInternal(bytecode, 0, null);
+  }
+
+  /**
+   * Compiles the given JavaScript code in this JSContext to bytecode.
+   */
+  public byte[] compileJsToBytecode(String code) {
+    synchronized (jsRuntime) {
+      checkClosed();
+      return QuickJS.compileJsToBytecode(pointer, code);
+    }
   }
 
   /**
@@ -192,7 +205,7 @@ public class JSContext implements Closeable {
     }
   }
 
-  private <T> T evaluateBytecodeInternal(byte[] bytecode, int flags, @Nullable TypeAdapter<T> adapter) {
+  private <T> void evaluateBytecodeInternal(byte[] bytecode, int flags, @Nullable TypeAdapter<T> adapter) {
     if ((flags & (~EVAL_FLAG_MASK)) != 0) {
       throw new IllegalArgumentException("Invalid flags: " + flags);
     }
@@ -206,17 +219,16 @@ public class JSContext implements Closeable {
 
       if (adapter != null) {
         JSValue jsValue = wrapAsJSValue(value);
-        return adapter.fromJSValue(this, jsValue);
+        adapter.fromJSValue(this, jsValue);
       } else {
         // Only check exception
         try {
-          if (QuickJS.getValueTag(value) == TYPE_EXCEPTION) {
-            throw new JSEvaluationException(QuickJS.getException(pointer));
-          }
+          throw new JSEvaluationException(QuickJS.getException(pointer));
+        } catch (Exception e) {
+          Log.e(TAG, "evaluateBytecodeInternal: " + e.getMessage());
         } finally {
           QuickJS.destroyValue(pointer, value);
         }
-        return null;
       }
     }
   }

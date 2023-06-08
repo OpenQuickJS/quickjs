@@ -12,6 +12,16 @@
 #define MSG_NULL_JS_CONTEXT "Null JSContext"
 #define MSG_NULL_JS_VALUE "Null JSValue"
 
+#ifndef NODE_GYP
+#include <android/log.h>
+#define  LOG_TAG    "QuickJs"
+#define  ALOGI(...)  __android_log_print(ANDROID_LOG_INFO, LOG_TAG,__VA_ARGS__)
+#define  ALOGE(...)  __android_log_print(ANDROID_LOG_ERROR, LOG_TAG,__VA_ARGS__)
+#else
+#define  ALOGI(...)  ((void)0)
+#define  ALOGE(...)  ((void)0)
+#endif
+
 static jmethodID on_interrupt_method;
 
 typedef struct InterruptData {
@@ -1158,7 +1168,8 @@ Java_com_shiqi_quickjs_QuickJS_evaluateBytecode(
     JNIEnv *env,
     jclass __unused clazz,
     jlong context,
-    jbyteArray bytecode
+    jbyteArray bytecode,
+    jint flags
 ) {
     JSContext *ctx = (JSContext *) context;
     CHECK_NULL(env, ctx, MSG_NULL_JS_CONTEXT);
@@ -1177,6 +1188,54 @@ Java_com_shiqi_quickjs_QuickJS_evaluateBytecode(
     if (buf != NULL) {
         (*env)->ReleaseByteArrayElements(env, bytecode, (jbyte *)buf, 0);
     }
+}
+
+JNIEXPORT jbyteArray JNICALL
+Java_com_shiqi_quickjs_QuickJS_compileJsToBytecode(
+        JNIEnv *env,
+        jclass __unused clazz,
+        jlong context,
+        jstring code
+) {
+    JSContext *ctx = (JSContext *) context;
+    CHECK_NULL_RET(env, ctx, MSG_NULL_JS_CONTEXT);
+    CHECK_NULL_RET(env, code, "Null code");
+
+    const char *code_str = (*env)->GetStringUTFChars(env, code, NULL);
+
+    // Create a JSValue that holds the compiled bytecode
+    JSValue compiled = JS_Eval(ctx, code_str, strlen(code_str), "<unknown>",
+                               JS_EVAL_TYPE_GLOBAL | JS_EVAL_FLAG_COMPILE_ONLY);
+
+    // Release the code_str
+    (*env)->ReleaseStringUTFChars(env, code, code_str);
+
+    if (JS_IsException(compiled)) {
+        JSValue error = JS_GetException(ctx);
+        ALOGE("error: %s", JS_ToCString(ctx, error));
+        return NULL;
+    }
+
+    // Write the bytecode to a buffer
+    size_t byteCodeLength;
+    uint8_t *bytes = JS_WriteObject(ctx, &byteCodeLength, compiled, JS_WRITE_OBJ_BYTECODE);
+
+    // Free the compiled JSValue
+    JS_FreeValue(ctx, compiled);
+
+    // Create a new Java byte array
+    jbyteArray result = (*env)->NewByteArray(env, byteCodeLength);
+    if (result == NULL) {
+        return NULL;  // OutOfMemoryError already thrown
+    }
+
+    // Move the bytes from C++ to Java
+    (*env)->SetByteArrayRegion(env, result, 0, byteCodeLength, (jbyte*)bytes);
+
+    // Free the bytes buffer
+    js_free(ctx, bytes);
+
+    return result;
 }
 
 JNIEXPORT jint JNICALL

@@ -38,6 +38,16 @@
 #include "shape.h"
 #include "string.h"
 
+#ifndef NODE_GYP
+#include <android/log.h>
+#define  LOG_TAG    "QuickJs"
+#define  ALOGI(...)  __android_log_print(ANDROID_LOG_INFO, LOG_TAG,__VA_ARGS__)
+#define  ALOGE(...)  __android_log_print(ANDROID_LOG_ERROR, LOG_TAG,__VA_ARGS__)
+#else
+#define  ALOGI(...)  ((void)0)
+#define  ALOGE(...)  ((void)0)
+#endif
+
 void free_function_bytecode(JSRuntime* rt, JSFunctionBytecode* b) {
   int i;
 
@@ -581,9 +591,9 @@ static int JS_WriteFunctionTag(BCWriterState* s, JSValueConst obj) {
     bc_put_leb128(s, b->debug.line_num);
     bc_put_leb128(s, b->debug.pc2line_len);
     dbuf_put(&s->dbuf, b->debug.pc2line_buf, b->debug.pc2line_len);
-    /** 
+    /**
      * purely for compatibility with WebF/Kraken V1 quickjs compiler (kbc1 file format).
-     * determination of whether a column number is available by 
+     * determination of whether a column number is available by
      * adding a special sequence of characters.
      */
     dbuf_putc(&s->dbuf, 255);
@@ -594,9 +604,9 @@ static int JS_WriteFunctionTag(BCWriterState* s, JSValueConst obj) {
     bc_put_leb128(s, b->debug.pc2column_len);
     dbuf_put(&s->dbuf, b->debug.pc2column_buf, b->debug.pc2column_len);
 
-    /** 
+    /**
      * purely for compatibility with WebF/Kraken V1 quickjs compiler (kbc1 file format).
-     * determination of whether a Self PolyIC is available by 
+     * determination of whether a Self PolyIC is available by
      * adding a special sequence of characters.
      */
     dbuf_putc(&s->dbuf, 255);
@@ -2105,6 +2115,7 @@ static int JS_ReadObjectAtoms(BCReaderState* s) {
 
   if (bc_get_u8(s, &v8))
     return -1;
+  ALOGI("JS_ReadObjectAtoms v8=%d BC_VERSION=%d", v8, BC_VERSION);
   /* XXX: could support byte swapped input */
   if (v8 != BC_VERSION) {
     JS_ThrowSyntaxError(s->ctx, "invalid version (%d expected=%d)", v8, BC_VERSION);

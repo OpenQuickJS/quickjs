@@ -25,5 +25,6 @@ else ()
 endif (LEAK_TRIGGER)
 
 add_library(quickjs-android SHARED ${QUICKJS_ANDROID_SOURCES})
+find_library(log-lib log)
 target_compile_options(quickjs-android PRIVATE ${COMMON_FLAGS})
-target_link_libraries(quickjs-android PRIVATE quickjs mimalloc)
+target_link_libraries(quickjs-android PRIVATE quickjs mimalloc ${log-lib})

@@ -170,5 +170,6 @@ public class QuickJS {
   static native long evaluate(long context, String sourceCode, String fileName, int flags);
 
   static native void evaluateBytecode(long context, byte[] bytecode, int flags);
+  static native byte[] compileJsToBytecode(long context, String code);
   static native int executePendingJob(long context);
 }
