@@ -34,13 +34,12 @@ class MainActivity : ComponentActivity() {
                 ) {
                     Greeting("Android")
                     Button(onClick = {
-                        quickJSEngine.runJsFileFromAsset("asset:/JsEngineSonicBridge.js")
-                        // quickJSEngine.runJsFileFromAsset("asset:/sonic.kbc1")
+                        // quickJSEngine.runJsFileFromAsset("asset:/JsEngineSonicBridge.js")
                         quickJSEngine.runJsFileFromAsset("asset:/sonic.js")
-                        val bytes = quickJSEngine.getJsContext().compileJsToBytecode("console.log('Hello, Shiqi!')")
-                        quickJSEngine.getJsContext().evaluateBytecode(bytes)
+                        // val bytes = quickJSEngine.getJsContext().compileJsToBytecode("console.log('Hello, Shiqi!')")
+                        // quickJSEngine.getJsContext().evaluateBytecode(bytes)
 
-                        Log.i(TAG, "bytes: ${bytes?.size}")
+                        // Log.i(TAG, "bytes: ${bytes?.size}")
                     }) {
                         Text("Click Me")
                     }

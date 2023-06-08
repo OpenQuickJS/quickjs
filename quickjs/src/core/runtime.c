@@ -3163,9 +3163,6 @@ JSValue JS_EvalBytecode(JSContext* ctx, const uint8_t *buf, size_t buf_len) {
        return JS_ThrowTypeError(ctx, "Failed to evaluate bytecode function");
     }
 
-    // Free the memory allocated for bytecode object
-    JS_FreeValue(ctx, obj);
-
     return val;
 }
 
