@@ -837,6 +837,7 @@ JSValue js_array_indexOf(JSContext* ctx, JSValueConst this_val, int argc, JSValu
   JSValue* arrp;
   uint32_t count;
 
+  // boxing if it's a primitive value
   obj = JS_ToObject(ctx, this_val);
   if (js_get_length64(ctx, &len, obj))
     goto exception;
@@ -848,6 +849,8 @@ JSValue js_array_indexOf(JSContext* ctx, JSValueConst this_val, int argc, JSValu
       if (JS_ToInt64Clamp(ctx, &n, argv[1], 0, len, len))
         goto exception;
     }
+
+    // handle array
     if (js_get_fast_array(ctx, obj, &arrp, &count)) {
       for (; n < count; n++) {
         if (js_strict_eq2(ctx, JS_DupValue(ctx, argv[0]), JS_DupValue(ctx, arrp[n]), JS_EQ_STRICT)) {
@@ -856,6 +859,8 @@ JSValue js_array_indexOf(JSContext* ctx, JSValueConst this_val, int argc, JSValu
         }
       }
     }
+
+    // handle array-like (e.g string)
     for (; n < len; n++) {
       int present = JS_TryGetPropertyInt64(ctx, obj, n, &val);
       if (present < 0)

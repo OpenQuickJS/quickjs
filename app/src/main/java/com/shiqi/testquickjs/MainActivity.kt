@@ -40,33 +40,14 @@ class MainActivity : ComponentActivity() {
                     Button(onClick = {
                         // Post a task to the Handler to run on the HandlerThread
                         handler.post {
-                            // v8
-                            val hippyJsInitStart = System.currentTimeMillis()
-                            val hippyJsEngine = HippyJsEngine(applicationContext)
-                            hippyJsEngine.init()
-                            val hippyJsInitEnd = System.currentTimeMillis()
-                            Log.i(TAG, "v8 init cost: ${hippyJsInitEnd - hippyJsInitStart}ms")
-
-                            // quickjs
-                            val quickJsInitStart = System.currentTimeMillis()
-                            val quickJSEngine = QuickJsEngine(applicationContext)
-                            quickJSEngine.init()
-                            val quickJsInitEnd = System.currentTimeMillis()
-                            Log.i(TAG, "quickjs init cost: ${quickJsInitEnd - quickJsInitStart}ms")
-
-                            val script = quickJSEngine.getScriptFromAsset("asset:/sonic.js")
-
-                            val jsContext = quickJSEngine.createJsContext()
-                            val quickJsScriptStartTime = System.currentTimeMillis()
-                            jsContext.evaluate(script, "file.js")
-                            val quickJsScriptEndTime = System.currentTimeMillis()
-                            Log.i(TAG, "quickjs script cost: ${quickJsScriptEndTime - quickJsScriptStartTime}ms")
-
-                            val bytes = quickJSEngine.getJsContext().compileJsToBytecode(script)
-                            val startTime = System.currentTimeMillis()
-                            quickJSEngine.getJsContext().evaluateBytecode(bytes)
-                            Log.i(TAG, "quickjs eval, cost: ${System.currentTimeMillis() - startTime}ms")
-
+                            val quickJsEngine = QuickJsEngine(baseContext)
+                            quickJsEngine.init()
+                            val jsContext = quickJsEngine.getJsContext()
+                            jsContext.evaluate("""
+                                //const indexInString = Array.prototype.indexOf.call("abc", "b")
+                                const indexInString = "abc".indexOf("b")
+                                console.log(JSON.stringify({ indexInString }))
+                            """.trimIndent())
                         }
                     }) {
                         Text("Click Me")

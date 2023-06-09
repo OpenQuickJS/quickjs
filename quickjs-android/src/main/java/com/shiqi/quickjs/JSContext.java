@@ -120,6 +120,13 @@ public class JSContext implements Closeable {
   }
 
   /**
+   * Evaluates a snippet of anonymous JavaScript code.
+   */
+  public JSValue evaluate(String script) {
+    return evaluateInternal(script, "anonymous.js", EVAL_TYPE_GLOBAL, EVAL_FLAG_STRICT, null);
+  }
+
+  /**
    * Evaluates the script in this JSContext.
    *
    * @param type must be one of {@link #EVAL_TYPE_GLOBAL} and {@link #EVAL_TYPE_MODULE}

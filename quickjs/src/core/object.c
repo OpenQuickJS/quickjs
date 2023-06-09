@@ -55,6 +55,15 @@ JSValue JS_GetPropertyValue(JSContext* ctx, JSValueConst this_obj, JSValue prop)
       case JS_CLASS_ARRAY:
       case JS_CLASS_ARGUMENTS:
         return JS_DupValue(ctx, p->u.array.u.values[idx]);
+      case JS_CLASS_STRING: {
+        JSString *p1 = JS_VALUE_GET_STRING(p->u.object_data);
+        uint32_t ch;
+        if (p1->is_wide_char)
+          ch = p1->u.str16[idx];
+        else
+          ch = p1->u.str8[idx];
+        return js_new_string_char(ctx, ch);
+      }
       case JS_CLASS_INT8_ARRAY:
         return JS_NewInt32(ctx, p->u.array.u.int8_ptr[idx]);
       case JS_CLASS_UINT8C_ARRAY:
@@ -846,6 +855,8 @@ int JS_HasProperty(JSContext* ctx, JSValueConst obj, JSAtom prop) {
     JS_FreeValue(ctx, JS_MKPTR(JS_TAG_OBJECT, p));
     if (ret != 0)
       return ret;
+
+    // handle Uint8Array, Float64Array etc.
     if (p->class_id >= JS_CLASS_UINT8C_ARRAY && p->class_id <= JS_CLASS_FLOAT64_ARRAY) {
       ret = JS_AtomIsNumericIndex(ctx, prop);
       if (ret != 0) {
@@ -854,6 +865,21 @@ int JS_HasProperty(JSContext* ctx, JSValueConst obj, JSAtom prop) {
         return FALSE;
       }
     }
+
+    // handle string object
+    if (p->class_id == JS_CLASS_STRING) {
+      if (__JS_AtomIsTaggedInt(prop)) {
+        JSString* p1;
+        uint32_t idx;
+        p1 = JS_VALUE_GET_STRING(p->u.object_data);
+        idx = __JS_AtomToUInt32(prop);
+        if (idx < p1->len) {
+          return TRUE;
+        }
+      }
+      return FALSE;
+    }
+
     p = p->shape->proto;
     if (!p)
       break;

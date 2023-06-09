@@ -1,7 +1,6 @@
 build
 bin
 .idea
-.vscode
 lib
 cmake-build-*
 perf.*
@@ -11,3 +10,4 @@ build
 test262_errors.txt
 test262_report.txt
 test262
+test262/**
