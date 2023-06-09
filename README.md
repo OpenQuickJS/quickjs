@@ -43,9 +43,9 @@ This is a non-serious benchmark. The purpose is to compare the performance of Qu
 
 | Engine |  v8  | QuickJS (Script Mode) | QuickJS (Bytecode Mode) |
 | :----: | :--: | :-------------------: | :---------------------: |
-|  init  | 37ms |         18ms          |          18ms           |
-|  eval  | 35ms |         282ms         |          48ms           |
-| total  | 72ms |         300ms         |          56ms           |
+|  init  | 30ms |         18ms          |          18ms           |
+|  eval  | 29ms |         282ms         |          48ms           |
+| total  | 59ms |         300ms         |          56ms           |
 
 - Device: Huawei P30 Pro (Kirin 980), Android 10.
 - Test JavaScript File: `asset:/sonic.js` (189 KB).
