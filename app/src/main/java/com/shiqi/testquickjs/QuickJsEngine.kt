@@ -67,6 +67,13 @@ class QuickJsEngine(private val context: Context) {
         }
     }
 
+    fun createJsContext(): JSContext {
+        val quickJS = QuickJS.Builder().build()
+        val jsRuntime = quickJS.createJSRuntime()
+        jsRuntime.setMaxStackSize(0)
+        return jsRuntime.createJSContext()
+    }
+
     fun getJsContext(): JSContext {
         return jsContext
     }

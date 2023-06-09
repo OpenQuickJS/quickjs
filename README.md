@@ -7,27 +7,27 @@
 1. Download the latest `.aar` archive from [release](https://github.com/shiqimei/quickjs-android/releases) page;
 2. In Android Studio: `File > New > New Module > Import .JAR/.AAR Package`, locate `.aar`, click `Finish`.
 
-  ```Java
-  QuickJS quickJS = new QuickJS.Builder().build();
-  try (JSRuntime runtime = quickJS.createJSRuntime()) {
-    try (JSContext context = runtime.createJSContext()) {
-      String script1 = "" +
-          "function fibonacci(n) {" +
-          "  if (n == 0 || n == 1) return n;" +
-          "  return fibonacci(n - 1) + fibonacci(n - 2);" +
-          "}";
-      // Evaluate a script without return value
-      context.evaluate(script1, "fibonacci.js");
+```Java
+QuickJS quickJS = new QuickJS.Builder().build();
+try (JSRuntime runtime = quickJS.createJSRuntime()) {
+  try (JSContext context = runtime.createJSContext()) {
+    String script1 = "" +
+        "function fibonacci(n) {" +
+        "  if (n == 0 || n == 1) return n;" +
+        "  return fibonacci(n - 1) + fibonacci(n - 2);" +
+        "}";
+    // Evaluate a script without return value
+    context.evaluate(script1, "fibonacci.js");
 
-      String script2 = "fibonacci(10);";
-      // Evaluate a script with return value
-      int result = context.evaluate(script2, "fibonacci.js", int.class);
-      assertEquals(55, result);
-    }
+    String script2 = "fibonacci(10);";
+    // Evaluate a script with return value
+    int result = context.evaluate(script2, "fibonacci.js", int.class);
+    assertEquals(55, result);
   }
-  ```
+}
+```
 
-  See [Usages.md](./Usages.md) for advanced usages.
+See [Usages.md](./Usages.md) for advanced usages.
 
 ## Develop
 
@@ -41,11 +41,11 @@ Open the folder `quickjs-android` in Android Studio.
 
 This is a non-serious benchmark. The purpose is to compare the performance of QuickJS and V8 on Android.
 
-| Engine |  v8  | QuickJS (Bytecode Mode) |
-| :----: | :--: | :---------------------: |
-|  init  | 30ms |          14ms           |
-|  eval  | 29ms |          47ms           |
-| total  | 59ms |          61ms           |
+| Engine |  v8  | QuickJS (Script Mode) | QuickJS (Bytecode Mode) |
+| :----: | :--: | :-------------------: | :---------------------: |
+|  init  | 37ms |         18ms          |          18ms           |
+|  eval  | 35ms |         282ms         |          48ms           |
+| total  | 72ms |         300ms         |          56ms           |
 
 - Device: Huawei P30 Pro (Kirin 980), Android 10.
 - Test JavaScript File: `asset:/sonic.js` (189 KB).

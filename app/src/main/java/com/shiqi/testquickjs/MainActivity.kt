@@ -15,7 +15,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.shiqi.testquickjs.ui.theme.QuickJSTheme
-import kotlinx.coroutines.NonCancellable.start
 
 class MainActivity : ComponentActivity() {
     companion object {
@@ -56,6 +55,12 @@ class MainActivity : ComponentActivity() {
                             Log.i(TAG, "quickjs init cost: ${quickJsInitEnd - quickJsInitStart}ms")
 
                             val script = quickJSEngine.getScriptFromAsset("asset:/sonic.js")
+
+                            val jsContext = quickJSEngine.createJsContext()
+                            val quickJsScriptStartTime = System.currentTimeMillis()
+                            jsContext.evaluate(script, "file.js")
+                            val quickJsScriptEndTime = System.currentTimeMillis()
+                            Log.i(TAG, "quickjs script cost: ${quickJsScriptEndTime - quickJsScriptStartTime}ms")
 
                             val bytes = quickJSEngine.getJsContext().compileJsToBytecode(script)
                             val startTime = System.currentTimeMillis()
