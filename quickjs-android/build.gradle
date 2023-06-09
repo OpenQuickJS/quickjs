@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace 'com.kugou.quickjs'
+    namespace 'com.shiqi.quickjs'
     compileSdk 33
 
     defaultConfig {
-        minSdk 24
+        minSdk 22
         targetSdk 33
         versionCode 1
         versionName "1.0"
