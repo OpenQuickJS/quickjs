@@ -1,9 +1,6 @@
-quickjs
----
+# QuickJS
 
-![linux ci](https://github.com/openwebf/quickjs/actions/workflows/linux.yml/badge.svg)
-
-> Optimized quickjs mantained by OpenWebF team.
+> Self-maintained QuickJS
 
 ### Optimizations
 
@@ -30,16 +27,28 @@ In our plan, we first complete the above optimizations and then gradually add th
 you can find `libquickjs.a` in lib folder and `qjs` / `qjsc` / `run-test262` in bin folder.
 
 
-### How To Run Test262
+### Tests
 
-```shell
-> bash scripts/test.sh
+```bash
+Average memory statistics for 75250 tests:
+
+NAME                    COUNT     SIZE
+memory allocated         1011   124975  (123.6 per block)
+memory used               967   117030  (0 overhead, 8.2 average slack)
+atoms                     532    26858  (50.5 per atom)
+objects                   172    12425  (72.2 per object)
+properties              876    15798  (5.1 per object)
+shapes                   60    13809  (230.2 per shape)
+bytecode functions         13     1685
+bytecode                 13      931  (71.6 per function)
+C functions               100
+arrays                      1
+fast arrays               1
+elements                  1       16  (1.0 per fast array)
+
+Result: 515/75250 errors, 1392 excluded, 7972 skipped, 515 new
 ```
 
-It will output result like:
-```
-Result: 573/75124 errors, 1388 excluded, 7844 skipped, 573 new
-```
 
 ### Benchmark
 
