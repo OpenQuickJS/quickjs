@@ -866,6 +866,17 @@ JSValue js_array_indexOf(JSContext* ctx, JSValueConst this_val, int argc, JSValu
       if (present < 0)
         goto exception;
       if (present) {
+#ifdef CONFIG_DEBUG_ON_RELEASE
+        __internal_debug_log(
+            "present_str: %s, input_char: %s, present: %d, char: %s, equal: %d",
+            JS_ToCString(ctx,this_val),
+            JS_ToCString(ctx,argv[0]),
+            present,
+            JS_ToCString(ctx, JS_DupValue(ctx, val)),
+            js_strict_eq2(ctx, JS_DupValue(ctx, argv[0]), val, JS_EQ_STRICT),
+            "\n"
+        );
+#endif
         if (js_strict_eq2(ctx, JS_DupValue(ctx, argv[0]), val, JS_EQ_STRICT)) {
           res = n;
           break;

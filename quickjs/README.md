@@ -16,7 +16,7 @@ In addition to the relevant features and optimizations in the [TODO](https://git
 
 In our plan, we first complete the above optimizations and then gradually add the remaining parts.
 
-### How To Build
+### Develop
 
 ```shell
 > mkdir build
@@ -26,6 +26,13 @@ In our plan, we first complete the above optimizations and then gradually add th
 
 you can find `libquickjs.a` in lib folder and `qjs` / `qjsc` / `run-test262` in bin folder.
 
+#### Debug
+
+Pass this argument to cmake enable debug log on release build.
+
+```
+-DCONFIG_DEBUG_ON_RELEASE=1
+```
 
 ### Tests
 

@@ -1,4 +1,7 @@
 {
     "cmake.sourceDirectory": "${workspaceFolder}/quickjs",
-    "cmake.cmakePath": "/usr/local/bin/cmake"
+    "cmake.cmakePath": "/usr/local/bin/cmake",
+    "files.associations": {
+        "js-array.h": "c"
+    }
 }

@@ -49,8 +49,10 @@ JSValue JS_GetPropertyValue(JSContext* ctx, JSValueConst this_obj, JSValue prop)
     p = JS_VALUE_GET_OBJ(this_obj);
     idx = JS_VALUE_GET_INT(prop);
     len = (uint32_t)p->u.array.count;
+
     if (unlikely(idx >= len))
       goto slow_path;
+
     switch (p->class_id) {
       case JS_CLASS_ARRAY:
       case JS_CLASS_ARGUMENTS:
@@ -62,7 +64,8 @@ JSValue JS_GetPropertyValue(JSContext* ctx, JSValueConst this_obj, JSValue prop)
           ch = p1->u.str16[idx];
         else
           ch = p1->u.str8[idx];
-        return js_new_string_char(ctx, ch);
+        JSValue ret = js_new_string_char(ctx, ch);
+        return ret;
       }
       case JS_CLASS_INT8_ARRAY:
         return JS_NewInt32(ctx, p->u.array.u.int8_ptr[idx]);
@@ -121,8 +124,9 @@ int JS_TryGetPropertyInt64(JSContext* ctx, JSValueConst obj, int64_t idx, JSValu
     present = JS_HasProperty(ctx, obj, __JS_AtomFromUInt32(idx));
     if (present > 0) {
       val = JS_GetPropertyValue(ctx, obj, JS_NewInt32(ctx, idx));
-      if (unlikely(JS_IsException(val)))
+      if (unlikely(JS_IsException(val))) {
         present = -1;
+      }
     }
   } else {
     prop = JS_NewAtomInt64(ctx, idx);

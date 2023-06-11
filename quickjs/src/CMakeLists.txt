@@ -1,3 +1,9 @@
+if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+    set(COMPILE_FLAGS ${COMPILE_FLAGS} -g)
+elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
+    set(COMPILE_FLAGS ${COMPILE_FLAGS} -O3)
+endif()
+
 add_library(quickjs
     libbf.c
     cutils.c
@@ -40,6 +46,9 @@ add_library(quickjs
     core/builtins/js-string.c
     core/builtins/js-symbol.c
     core/builtins/js-typed-array.c
+
+    # misc
+    core/misc/debug.c
 )
 
 execute_process(
@@ -47,13 +56,20 @@ execute_process(
     OUTPUT_VARIABLE QUICKJS_VERSION
 )
 
-if (CMAKE_BUILD_TYPE STREQUAL "Debug")
-    set(COMPILE_FLAGS ${COMPILE_FLAGS} -g)
-elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
-    set(COMPILE_FLAGS ${COMPILE_FLAGS} -O3)
+add_compile_options(${COMPILE_FLAGS})
+
+# Debug on release
+if (CONFIG_DEBUG_ON_RELEASE)
+    add_compile_definitions(CONFIG_DEBUG_ON_RELEASE)
 endif()
 
-add_compile_options(${COMPILE_FLAGS})
+# Debug on release
+if (CONFIG_DEBUG_ON_RELEASE)
+    target_compile_options(quickjs PUBLIC
+        -DCONFIG_DEBUG_ON_RELEASE
+    )
+endif()
+
 target_compile_options(quickjs PUBLIC
     -D_GNU_SOURCE
     -DCONFIG_BIGNUM

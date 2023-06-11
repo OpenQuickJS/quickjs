@@ -77,6 +77,11 @@ JSValue JS_ToObject(JSContext* ctx, JSValueConst val) {
         JSString* p1 = JS_VALUE_GET_STRING(val);
         obj = JS_NewObjectClass(ctx, JS_CLASS_STRING);
         JS_DefinePropertyValue(ctx, obj, JS_ATOM_length, JS_NewInt32(ctx, p1->len), 0);
+
+        // set u.array.count to make it array-like
+        // we check `idx` and `len` in JS_GetPropertyValue
+        JSObject*  p = JS_VALUE_GET_OBJ(obj);
+        p->u.array.count = p1->len;
       }
       goto set_value;
     case JS_TAG_BOOL:

@@ -1,5 +1,13 @@
 cmake_minimum_required(VERSION 3.9.4)
 project(QUICKJS C)
+
+# Build type: "Debug" or "Release"
+if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+    set(COMPILE_FLAGS ${COMPILE_FLAGS} -g)
+elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
+    set(COMPILE_FLAGS ${COMPILE_FLAGS} -O3)
+endif()
+
 set(C_STANDARD 17)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(MI_OVERRIDE OFF)
@@ -7,8 +15,8 @@ set(MI_OVERRIDE OFF)
 # interprocedural optimization (IPO/LTO)
 include(CheckIPOSupported)
 check_ipo_supported(RESULT supported OUTPUT error)
-if( supported AND NOT CMAKE_BUILD_TYPE STREQUAL "Debug")
-    set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
+if( supported )
+   set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
 endif()
 
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
@@ -21,11 +29,6 @@ add_subdirectory(src)
 add_subdirectory(vendor/mimalloc)
 
 set(COMPILE_FLAGS -Wall -MMD -Wno-array-bounds -Wno-format-truncation)
-if (CMAKE_BUILD_TYPE STREQUAL "Debug")
-    set(COMPILE_FLAGS ${COMPILE_FLAGS} -g)
-elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
-    set(COMPILE_FLAGS ${COMPILE_FLAGS} -O3)
-endif()
 
 add_compile_options(${COMPILE_FLAGS})
 add_compile_definitions(
