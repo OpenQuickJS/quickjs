@@ -2558,6 +2558,7 @@ void JS_AddIntrinsicBaseObjects(JSContext* ctx) {
   ctx->class_proto[JS_CLASS_STRING] = JS_NewObjectProtoClass(ctx, ctx->class_proto[JS_CLASS_OBJECT], JS_CLASS_STRING);
   JS_SetObjectData(ctx, ctx->class_proto[JS_CLASS_STRING], JS_AtomToString(ctx, JS_ATOM_empty_string));
   obj = JS_NewGlobalCConstructor(ctx, "String", js_string_constructor, 1, ctx->class_proto[JS_CLASS_STRING]);
+  ctx->string_ctor = JS_DupValue(ctx, obj);
   JS_SetPropertyFunctionList(ctx, obj, js_string_funcs, countof(js_string_funcs));
   JS_SetPropertyFunctionList(ctx, ctx->class_proto[JS_CLASS_STRING], js_string_proto_funcs, countof(js_string_proto_funcs));
 

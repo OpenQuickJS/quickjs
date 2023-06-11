@@ -356,6 +356,7 @@ struct JSContext {
     JSValue *class_proto;
     JSValue function_proto;
     JSValue function_ctor;
+    JSValue string_ctor;
     JSValue array_ctor;
     JSValue regexp_ctor;
     JSValue promise_ctor;

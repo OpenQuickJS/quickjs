@@ -15,7 +15,7 @@ set(MI_OVERRIDE OFF)
 # interprocedural optimization (IPO/LTO)
 include(CheckIPOSupported)
 check_ipo_supported(RESULT supported OUTPUT error)
-if( supported )
+if( supported AND NOT CMAKE_BUILD_TYPE STREQUAL "Debug")
    set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
 endif()
 

@@ -30,6 +30,7 @@
 #include "../runtime.h"
 #include "../string.h"
 #include "js-operator.h"
+#include "js-string.h"
 
 void js_object_data_finalizer(JSRuntime* rt, JSValue val) {
   JSObject* p = JS_VALUE_GET_OBJ(val);
@@ -72,18 +73,7 @@ JSValue JS_ToObject(JSContext* ctx, JSValueConst val) {
       obj = JS_NewObjectClass(ctx, JS_CLASS_NUMBER);
       goto set_value;
     case JS_TAG_STRING:
-      /* XXX: should call the string constructor */
-      {
-        JSString* p1 = JS_VALUE_GET_STRING(val);
-        obj = JS_NewObjectClass(ctx, JS_CLASS_STRING);
-        JS_DefinePropertyValue(ctx, obj, JS_ATOM_length, JS_NewInt32(ctx, p1->len), 0);
-
-        // set u.array.count to make it array-like
-        // we check `idx` and `len` in JS_GetPropertyValue
-        JSObject*  p = JS_VALUE_GET_OBJ(obj);
-        p->u.array.count = p1->len;
-      }
-      goto set_value;
+        return js_string_constructor(ctx, ctx->string_ctor, 1, (JSValueConst *)&val);
     case JS_TAG_BOOL:
       obj = JS_NewObjectClass(ctx, JS_CLASS_BOOLEAN);
       goto set_value;

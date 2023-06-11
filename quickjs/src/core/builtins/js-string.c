@@ -139,6 +139,11 @@ JSValue js_string_constructor(JSContext* ctx, JSValueConst new_target, int argc,
     if (!JS_IsException(obj)) {
       JS_SetObjectData(ctx, obj, val);
       JS_DefinePropertyValue(ctx, obj, JS_ATOM_length, JS_NewInt32(ctx, p1->len), 0);
+
+      // set u.array.count to make it array-like
+      // See: `idx` and `len` in JS_GetPropertyValue
+      JSObject*  p = JS_VALUE_GET_OBJ(obj);
+      p->u.array.count = p1->len;
     }
     return obj;
   } else {
