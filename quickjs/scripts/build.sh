@@ -2,9 +2,7 @@
 
 set -x
 
+rm -rf build bin lib 
 mkdir build
-cd build
-cmake -DCMAKE_BUILD_TYPE=Debug ..
-make -j4
-make -j4 # POST_BUILD
-cd ..
+cmake -G Ninja -DCMAKE_BUILD_TYPE=Release -B build -S .
+cmake --build ./build --target qjs -j 8

@@ -4,9 +4,10 @@ set(C_STANDARD 17)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(MI_OVERRIDE OFF)
 
+# interprocedural optimization (IPO/LTO)
 include(CheckIPOSupported)
 check_ipo_supported(RESULT supported OUTPUT error)
-if( supported )
+if( supported AND NOT CMAKE_BUILD_TYPE STREQUAL "Debug")
     set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
 endif()
 
@@ -38,6 +39,13 @@ set(QJSC_EXE "${EXECUTABLE_OUTPUT_PATH}/qjsc")
 set(QJS_CONFIG ${QJSC_CONFIG} -DCONFIG_CC="clang")
 
 add_executable(qjsc qjsc.c quickjs-libc.c)
+
+# Add -lm if on Linux to handle math.h
+# See: https://askubuntu.com/a/332919
+if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    list(APPEND LINK_LIBRARIES "m")
+endif()
+
 target_link_libraries(qjsc quickjs ${LINK_LIBRARIES} mimalloc-static)
 target_compile_definitions(qjsc PUBLIC ${QJSC_CONFIG})
 

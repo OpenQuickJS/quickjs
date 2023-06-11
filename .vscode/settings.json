@@ -1,0 +1,4 @@
+{
+    "cmake.sourceDirectory": "${workspaceFolder}/quickjs",
+    "cmake.cmakePath": "/usr/local/bin/cmake"
+}

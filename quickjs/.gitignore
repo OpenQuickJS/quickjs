@@ -11,3 +11,4 @@ test262_errors.txt
 test262_report.txt
 test262
 test262/**
+CMakeFiles
