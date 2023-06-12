@@ -36,12 +36,16 @@ The Windows build environment is not yet officially supported.
 #### Build
 
 ```shell
-> mkdir build
-> cd build
-> cmake .. && make -j4
+bash scripts/build.sh # build quickjs qjs
+bash scripts/test.sh # run test262 tests
 ```
 
-you can find `libquickjs.a` in lib folder and `qjs` / `qjsc` / `run-test262` in bin folder.
+You can find `libquickjs.a` in `lib` folder and `qjs` / `run-test262` in `bin` folder.
+
+1. If you're using Visual Studio Code, you can use the `CMake Tools` extension to build and debug.
+2. If you're using CLion, you can open the project directly to build and debug.
+
+Using VSCode or CLion for regular development is recommended.
 
 #### Debug
 
