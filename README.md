@@ -24,6 +24,15 @@ In our plan, we first complete the above optimizations and then gradually add th
 git clone --recurse-submodules https://github.com/openquickjs/quickjs.git
 ```
 
+#### Install Build Tools
+
+```bash
+brew install cmake ninja # macOS
+sudo apt install cmake ninja-build # Ubuntu
+```
+
+The Windows build environment is not yet officially supported.
+
 #### Build
 
 ```shell
