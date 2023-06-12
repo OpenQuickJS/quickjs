@@ -1,6 +1,6 @@
 # QuickJS
 
-> Self-maintained QuickJS
+> A community-driven QuickJS fork.
 
 ### Optimizations
 
@@ -17,6 +17,14 @@ In addition to the relevant features and optimizations in the [TODO](https://git
 In our plan, we first complete the above optimizations and then gradually add the remaining parts.
 
 ### Develop
+
+#### Clone
+
+```bash
+git clone --recurse-submodules https://github.com/openquickjs/quickjs.git
+```
+
+#### Build
 
 ```shell
 > mkdir build
