@@ -26,5 +26,5 @@ jobs:
       run: cmake --build ${{github.workspace}}/build --target qjs run-test262 -j 8
 
     - name: Test
-      run: qjs -e 'console.log("Hello, World!")'
+      run: ./bin/qjs -e 'console.log("Hello, World!")'
 
