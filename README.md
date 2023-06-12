@@ -42,12 +42,21 @@ bash scripts/test.sh # run test262 tests
 
 You can find `libquickjs.a` in `lib` folder and `qjs` / `run-test262` in `bin` folder.
 
-1. If you're using Visual Studio Code, you can use the `CMake Tools` extension to build and debug.
-2. If you're using CLion, you can open the project directly to build and debug.
+1. If you're using Visual Studio Code, you can use the `CMake Tools` extension to build the program.
+2. If you're using CLion, you can open the project directly to build the program.
 
 Using VSCode or CLion for regular development is recommended.
 
 #### Debug
+
+Install Debug Tools if you need.
+
+```bash
+brew install lldb # macOS
+sudo apt install lldb # Ubuntu
+```
+
+If you're using VSCode, you can use the `C/C++` and `Code LLDB` extension to debug.
 
 Pass this argument to cmake enable debug log on release build.
 
