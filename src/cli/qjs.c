@@ -34,7 +34,7 @@
 #include <time.h>
 
 #include "mimalloc.h"
-#include "include/quickjs/cutils.h"
+#include "quickjs/cutils.h"
 #include "quickjs-libc.h"
 
 extern const uint8_t qjsc_repl[];

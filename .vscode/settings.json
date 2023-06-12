@@ -2,6 +2,11 @@
     "cmake.sourceDirectory": "${workspaceFolder}",
     "cmake.cmakePath": "/usr/local/bin/cmake",
     "files.associations": {
-        "js-array.h": "c"
+        "*.ux": "vue",
+        "*.mdx": "markdown",
+        "js-array.h": "c",
+        "quickjs-libc.h": "c",
+        "cutils.h": "c",
+        "list.h": "c"
     }
 }

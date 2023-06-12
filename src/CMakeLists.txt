@@ -1,3 +1,4 @@
+# config build target: "Debug" or "Release"
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
     set(COMPILE_FLAGS ${COMPILE_FLAGS} -g)
 elseif(CMAKE_BUILD_TYPE STREQUAL "Release")

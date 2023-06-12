@@ -36,8 +36,8 @@
 #include <ftw.h>
 
 #include "mimalloc.h"
-#include "include/quickjs/cutils.h"
-#include "include/quickjs/list.h"
+#include "quickjs/cutils.h"
+#include "quickjs/list.h"
 #include "quickjs-libc.h"
 
 /* enable test262 thread support to test SharedArrayBuffer and Atomics */

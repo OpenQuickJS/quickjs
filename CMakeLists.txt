@@ -31,7 +31,6 @@ set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 
 # include c headers
-include_directories(${PROJECT_SOURCE_DIR})
 include_directories(${PROJECT_SOURCE_DIR}/include)
 include_directories(${PROJECT_SOURCE_DIR}/vendor/mimalloc/include)
 add_subdirectory(src)
@@ -70,7 +69,7 @@ target_link_libraries(qjs quickjs ${LINK_LIBRARIES} mimalloc-static)
 
 # build run-test262 (quickjs test262 runner)
 add_executable(run-test262
-        src/tests/run-test262.c
+        src/cli/run-test262.c
         src/cli/quickjs-libc.c
 )
 target_link_libraries(run-test262 quickjs ${LINK_LIBRARIES} mimalloc-static)

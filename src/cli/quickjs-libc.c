@@ -68,8 +68,8 @@ typedef sig_t sighandler_t;
 #endif
 
 #include "mimalloc.h"
-#include "include/quickjs/cutils.h"
-#include "include/quickjs/list.h"
+#include "quickjs/cutils.h"
+#include "quickjs/list.h"
 #include "quickjs-libc.h"
 
 /* TODO:

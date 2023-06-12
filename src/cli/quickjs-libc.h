@@ -27,7 +27,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "include/quickjs/quickjs.h"
+#include "quickjs/quickjs.h"
 
 #ifdef __cplusplus
 extern "C" {
