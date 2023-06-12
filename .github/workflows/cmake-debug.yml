@@ -1,0 +1,27 @@
+name: Build Debug target
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: seanmiddleditch/gha-setup-ninja@master
+    - uses: actions/checkout@v3
+      with:
+        submodules: recursive
+
+    - name: Configure CMake
+      run: cmake -G Ninja -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=Debug
+
+    - name: Build target
+      run: cmake --build ${{github.workspace}}/build --target qjs run-test262 -j 8
+
+    - name: Test
+      run: qjs -e 'console.log("Hello, World!")'
+
