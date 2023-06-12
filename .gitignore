@@ -14,3 +14,7 @@
 .cxx
 local.properties
 /.idea/
+cmake-build-*
+lib/
+bin/
+build/
