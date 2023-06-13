@@ -58,17 +58,34 @@ impl JSGCObjectHeader {
     }
 
     /// Prints the GC object details in a formatted output.
-    pub fn print(&self, index: i32) {
+    pub fn print(&self) {
         let gc_obj_type_name = get_gc_obj_type_name(&self.gc_obj_type());
         println!(
-            "{:<10} {:<10} {:<20} {:<10} {:<10} {:<10}",
-            index,
+            "{:?} {:<10} {:<20} {:<10} {:<10} {:<10}",
+            self as *const _,
             self.ref_count,
             gc_obj_type_name,
             self.mark(),
             self.dummy1,
             self.dummy2
         );
+    }
+}
+
+/// Function that prints a GC object
+///
+/// # Safety
+///
+/// This function is `unsafe` because it dereferences a raw pointer. The caller
+/// must ensure that the `gc_object` pointer points to a valid
+/// `JSGCObjectHeader` object. Calling this function with an invalid pointer
+/// leads to undefined behavior.
+#[no_mangle]
+pub unsafe extern "C" fn print_gc_object(gc_object: *mut JSGCObjectHeader) {
+    // Ensure the pointer is not null
+    if !gc_object.is_null() {
+        // Dereference the pointer and print the object
+        (*gc_object).print();
     }
 }
 
@@ -96,7 +113,7 @@ pub unsafe extern "C" fn print_gc_objects(list_head: *mut ListHead) {
             let gc_object = (cur_node as *mut ListHead as *mut u8)
                 .offset(-(offset_of!(JSGCObjectHeader, link) as isize))
                 as *mut JSGCObjectHeader;
-            (*gc_object).print(index);
+            (*gc_object).print();
         }
         cur_node = cur_node.next();
         if cur_node as *const _ == list_head {

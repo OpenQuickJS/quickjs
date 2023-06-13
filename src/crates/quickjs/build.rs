@@ -15,13 +15,13 @@ fn main() {
         .arg("--config")
         .arg("cbindgen.toml")
         .arg("--crate")
-        .arg("quickjs_gc") // quickjs_gc
+        .arg("quickjs") 
         .arg("--lang")
         .arg("c")
         .arg("--output")
         .arg("include/quickjs-rs.h")
         .output()
-        .expect("FAiled");
+        .expect("Failed to execute command.");
 
     println!("{}", String::from_utf8_lossy(&output.stdout));
     eprintln!("{}", String::from_utf8_lossy(&output.stderr));

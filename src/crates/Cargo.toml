@@ -2,5 +2,6 @@
 resolver = "2"
 members = [
     "quickjs",
-    "quickjs_gc"
+    "quickjs_gc",
+    "quickjs_backtrace"
 ]

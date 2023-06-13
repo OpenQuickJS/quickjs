@@ -11,3 +11,4 @@ crate-type = ["staticlib"]
 [dependencies]
 
 quickjs_gc = { path = "../quickjs_gc" }
+quickjs_backtrace = { path = "../quickjs_backtrace" }

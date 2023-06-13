@@ -559,7 +559,7 @@ JSValue JS_NewObjectFromShape(JSContext* ctx, JSShape* sh, JSClassID class_id) {
       break;
   }
   p->header.ref_count = 1;
-  add_gc_object(ctx->rt, &p->header, JS_GC_OBJ_TYPE_JS_OBJECT);
+   add_gc_object(ctx->rt, &p->header, JS_GC_OBJ_TYPE_JS_OBJECT);
   return JS_MKPTR(JS_TAG_OBJECT, p);
 }
 

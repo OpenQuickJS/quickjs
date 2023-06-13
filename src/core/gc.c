@@ -529,6 +529,11 @@ void __JS_FreeValue(JSContext* ctx, JSValue v) {
 void add_gc_object(JSRuntime* rt, JSGCObjectHeader* h, JSGCObjectTypeEnum type) {
   h->mark = 0;
   h->gc_obj_type = type;
+
+  // TODO: monitor new created object
+  // print_gc_object(&rt->gc_obj_list);
+  // printf("stack: %s", get_backtrace());
+
   list_add_tail(&h->link, &rt->gc_obj_list);
 }
 

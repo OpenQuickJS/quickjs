@@ -2670,7 +2670,9 @@ void JS_FreeRuntime(JSRuntime* rt) {
       printf("Secondary object leaks: %d\n", count);
   }
 #endif
-  print_gc_objects(&rt->gc_obj_list);
+  // Fixme: find the reason why there still some objects not freed
+  // print_gc_objects(&rt->gc_obj_list);
+
   assert(list_empty(&rt->gc_obj_list));
 
   /* free the classes */
