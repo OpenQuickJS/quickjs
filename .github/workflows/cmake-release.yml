@@ -19,6 +19,9 @@ jobs:
       - name: Install Ninja
         run: sudo apt-get install -y ninja-build
 
+      - name: Keep rust toolchain up to date
+        run: rustup update
+
       - name: Configure CMake
         run: cmake -G Ninja -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=Release
 
