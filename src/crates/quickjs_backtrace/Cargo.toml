@@ -4,5 +4,4 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-backtrace = "0.3.67"
-libc = "0.2.146"
+quickjs_common = { path = "../quickjs_common" }

@@ -1,4 +1,7 @@
 #![feature(offset_of)]
+
+mod record;
+
 use std::mem::offset_of;
 
 /// Represents a node in a doubly linked list.

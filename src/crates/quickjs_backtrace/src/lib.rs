@@ -1,8 +1,7 @@
-extern crate backtrace;
-extern crate libc;
+extern crate quickjs_common;
 
-use backtrace::Backtrace;
-use libc::c_char;
+use quickjs_common::backtrace::Backtrace;
+use quickjs_common::libc::c_char;
 use std::ffi::CString;
 
 /// Function that captures a backtrace and returns it as a C-compatible string.

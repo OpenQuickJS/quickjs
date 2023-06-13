@@ -92,6 +92,13 @@ dependencies = [
 name = "quickjs_backtrace"
 version = "0.1.0"
 dependencies = [
+ "quickjs_common",
+]
+
+[[package]]
+name = "quickjs_common"
+version = "0.1.0"
+dependencies = [
  "backtrace",
  "libc",
 ]
