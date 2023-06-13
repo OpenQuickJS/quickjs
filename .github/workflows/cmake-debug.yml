@@ -16,11 +16,15 @@ jobs:
       with:
         submodules: recursive
 
+    - name: Setup Rust
+      uses: actions-rs/toolchain@v1
+      with:
+        profile: minimal
+        toolchain: nightly
+        override: true
+
     - name: Install Ninja
       run: sudo apt-get install -y ninja-build
-
-    - name: Keep rust toolchain up to date
-      run: rustup update
 
     - name: Configure CMake
       run: cmake -G Ninja -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=Debug
