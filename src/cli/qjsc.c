@@ -34,7 +34,7 @@
 #endif
 
 #include "mimalloc.h"
-#include "include/quickjs/cutils.h"
+#include "quickjs/cutils.h"
 #include "quickjs-libc.h"
 
 typedef struct {

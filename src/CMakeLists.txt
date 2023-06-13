@@ -14,12 +14,6 @@ elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
     set(COMPILE_FLAGS ${COMPILE_FLAGS} -O3)
 endif()
 
-add_custom_target(
-    RustLibs ALL
-    COMMAND cargo build $<$<CONFIG:Release>:--release>
-    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/src/crates/quickjs
-)
-
 add_library(quickjs
     libbf.c
     cutils.c
@@ -67,6 +61,7 @@ add_library(quickjs
     core/misc/debug.c
 )
 
+# link quickjs rust library
 corrosion_import_crate(MANIFEST_PATH ${CMAKE_SOURCE_DIR}/src/crates/Cargo.toml)
 target_link_libraries(quickjs quickjs_rust)
 

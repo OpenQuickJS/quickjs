@@ -18,6 +18,11 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
     list(APPEND LINK_LIBRARIES "m")
 endif()
 
+# set OSX arch to x86_64 eve if on M1
+# TODO: support cross-compiling for M1, android etc.
+# https://corrosion-rs.github.io/corrosion/usage.html
+set(CMAKE_OSX_ARCHITECTURES x86_64)
+
 # enable interprocedural optimization (IPO/LTO) if supported
 include(CheckIPOSupported)
 check_ipo_supported(RESULT supported OUTPUT error)
