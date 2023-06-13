@@ -38,6 +38,7 @@ set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 # include c headers
 include_directories(${PROJECT_SOURCE_DIR}/include)
 include_directories(${PROJECT_SOURCE_DIR}/vendor/mimalloc/include)
+include_directories(${PROJECT_SOURCE_DIR}/src/crates/include)
 add_subdirectory(src)
 add_subdirectory(vendor/mimalloc)
 

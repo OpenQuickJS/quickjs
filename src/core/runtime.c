@@ -2612,9 +2612,6 @@ void JS_SetRuntimeInfo(JSRuntime* rt, const char* s) {
     rt->rt_info = s;
 }
 
-// TODO remove it from `core`
-void print_gc_objects(struct list_head *head);
-
 void JS_FreeRuntime(JSRuntime* rt) {
   struct list_head *el, *el1;
   int i;

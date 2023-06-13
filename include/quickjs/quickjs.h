@@ -980,6 +980,9 @@ int JS_SetModuleExportList(JSContext* ctx, JSModuleDef* m, const JSCFunctionList
 } /* extern "C" { */
 #endif
 
+/* quickjs_rs c bindings */
+#include "quickjs-rs.h"
+
 /* Should use in `jsc` repl only */
 #ifdef CONFIG_DEBUG_ON_RELEASE
 void __internal_debug_log(const char* fmt, ...);

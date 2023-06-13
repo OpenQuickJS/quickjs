@@ -61,9 +61,15 @@ add_library(quickjs
     core/misc/debug.c
 )
 
-# link quickjs rust library
+# create a custom target for including headers
+add_custom_target(include_rust_c_bindings
+    COMMAND echo "include headers: ${PROJECT_SOURCE_DIR}/src/crates/target/include"
+    COMMAND include_directories(${PROJECT_SOURCE_DIR}/src/crates/target/include)
+)
+
+# build rust libraries
 corrosion_import_crate(MANIFEST_PATH ${CMAKE_SOURCE_DIR}/src/crates/Cargo.toml)
-target_link_libraries(quickjs quickjs_rust)
+target_link_libraries(quickjs quickjs_rs)
 
 set(QUICKJS_VERSION STRING "0.1.0")
 
