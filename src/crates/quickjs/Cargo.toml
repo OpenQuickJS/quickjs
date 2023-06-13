@@ -1,0 +1,12 @@
+[package]
+name = "quickjs"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "quickjs_rust"
+crate-type = ["staticlib"]
+
+[dependencies]
+
+quickjs_gc = { path = "../quickjs_gc" }

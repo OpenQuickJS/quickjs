@@ -5,6 +5,13 @@ elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
     set(COMPILE_FLAGS ${COMPILE_FLAGS} -O3)
 endif()
 
+# build rust libraries
+add_custom_target(
+    RustLibs ALL
+    COMMAND cargo build $<$<CONFIG:Release>:--release>
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/src/crates
+)
+
 add_library(quickjs
     libbf.c
     cutils.c
@@ -52,10 +59,15 @@ add_library(quickjs
     core/misc/debug.c
 )
 
-execute_process(
-    COMMAND cat ../VERSION
-    OUTPUT_VARIABLE QUICKJS_VERSION
-)
+# link quickjs rust library
+set(RUST_LIB_DIR ${CMAKE_SOURCE_DIR}/src/crates/target/${CMAKE_BUILD_TYPE})
+link_directories(${RUST_LIB_DIR})
+add_library(quickjs_rust STATIC IMPORTED)
+set_target_properties(quickjs_rust PROPERTIES
+        IMPORTED_LOCATION ${RUST_LIB_DIR}/libquickjs_rust.a)
+target_link_libraries(quickjs quickjs_rust)
+
+set(QUICKJS_VERSION STRING "0.1.0")
 
 add_compile_options(${COMPILE_FLAGS})
 

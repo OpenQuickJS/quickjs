@@ -2612,6 +2612,9 @@ void JS_SetRuntimeInfo(JSRuntime* rt, const char* s) {
     rt->rt_info = s;
 }
 
+// TODO remove it from `core`
+void print_gc_objects(struct list_head *head);
+
 void JS_FreeRuntime(JSRuntime* rt) {
   struct list_head *el, *el1;
   int i;
@@ -2670,6 +2673,7 @@ void JS_FreeRuntime(JSRuntime* rt) {
       printf("Secondary object leaks: %d\n", count);
   }
 #endif
+  print_gc_objects(&rt->gc_obj_list);
   assert(list_empty(&rt->gc_obj_list));
 
   /* free the classes */

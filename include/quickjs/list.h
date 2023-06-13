@@ -30,6 +30,35 @@
 
 #include <stdio.h>
 
+
+/*
+ * Doubly Linked List
+ *
+ * This file offers a C implementation of a doubly linked list.
+ *
+ * Initialization:
+ * - `LIST_HEAD_INIT(el)`: Static list head initialization.
+ * - `init_list_head(struct list_head *head)`: Dynamic list head initialization.
+ *
+ * Query:
+ * - `list_entry(el, type, member)`: Retrieves the structure containing the list head.
+ * - `list_empty(struct list_head *el)`: Checks if a list is empty.
+ * - `list_for_each(el, head)`: Standard list iteration.
+ * - `list_for_each_safe(el, el1, head)`: List iteration that is safe against removal of the current entry.
+ * - `list_for_each_prev(el, head)`: Reverse list iteration.
+ * - `list_for_each_prev_safe(el, el1, head)`: Reverse list iteration that is safe against removal of the current entry.
+ *
+ * Insertion:
+ * - `__list_add(struct list_head *el, struct list_head *prev, struct list_head *next)`: Internal function to add an
+ *   entry between two known consecutive entries.
+ * - `list_add(struct list_head *el, struct list_head *head)`: Adds an entry after the specified head, useful for stack
+ *   implementation.
+ * - `list_add_tail(struct list_head *el, struct list_head *head)`: Adds an entry before the specified head, useful for
+ *   queue implementation.
+ *
+ * Deletion:
+ * - `list_del(struct list_head *el)`: Removes an entry from the list and reinitializes it.
+ */
 struct list_head {
     struct list_head *prev;
     struct list_head *next;
