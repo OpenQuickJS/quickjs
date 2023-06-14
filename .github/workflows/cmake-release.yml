@@ -23,6 +23,13 @@ jobs:
             ~/.ninja
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
 
+      - name: Check and Install curl
+        run: |
+          if ! command -v curl &> /dev/null
+          then
+            sudo apt-get update && sudo apt-get install -y curl
+          fi
+
       - name: Setup Rust
         run: |
           if ! command -v rustup &> /dev/null
