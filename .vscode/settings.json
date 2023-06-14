@@ -1,12 +1,11 @@
 {
-  "rust-analyzer.linkedProjects": [
-    "src/crates/Cargo.toml"
-  ],
+  "rust-analyzer.linkedProjects": ["src/crates/Cargo.toml"],
   "files.associations": {
     "quickjs-rs.h": "c",
     "js-array.h": "c",
     "types.h": "c",
     "list.h": "c",
     "js-function.h": "c"
-  }
+  },
+  "git.inputValidationLength": 72
 }
