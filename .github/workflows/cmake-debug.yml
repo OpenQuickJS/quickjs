@@ -20,7 +20,6 @@ jobs:
         with:
           path: |
             ~/.cargo
-            ~/.ninja
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
 
       - name: Install Rust toolchain
@@ -38,13 +37,7 @@ jobs:
           fi
 
       - name: Install Ninja
-        run: |
-          if [ ! -d "$HOME/.ninja" ]; then
-            mkdir $HOME/.ninja
-            curl -L https://github.com/ninja-build/ninja/releases/download/v1.10.2/ninja-linux.zip -o $HOME/.ninja/ninja.zip
-            unzip $HOME/.ninja/ninja.zip -d $HOME/.ninja
-            echo "$HOME/.ninja" >> $GITHUB_PATH
-          fi
+        run: sudo apt install ninja-build
 
       - name: Configure CMake
         run: cmake -G Ninja -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=Debug
