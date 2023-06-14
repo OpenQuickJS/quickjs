@@ -25,7 +25,7 @@
  */
 
 #include "js-number.h"
-#include "../convertion.h"
+#include "../conversion.h"
 #include "../exception.h"
 #include "../object.h"
 #include "../runtime.h"

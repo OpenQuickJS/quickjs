@@ -25,7 +25,7 @@
  */
 
 #include "string.h"
-#include "convertion.h"
+#include "conversion.h"
 #include "exception.h"
 #include "quickjs/cutils.h"
 #include "quickjs/list.h"

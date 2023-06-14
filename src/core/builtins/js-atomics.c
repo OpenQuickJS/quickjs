@@ -25,7 +25,7 @@
  */
 
 #include "js-atomics.h"
-#include "../convertion.h"
+#include "../conversion.h"
 #include "../exception.h"
 #include "js-typed-array.h"
 

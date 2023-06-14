@@ -25,7 +25,7 @@
 
 #include "parser.h"
 #include "builtins/js-function.h"
-#include "convertion.h"
+#include "conversion.h"
 #include "exception.h"
 #include "function.h"
 #include "bytecode.h"

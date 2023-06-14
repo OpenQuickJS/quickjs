@@ -29,7 +29,7 @@ add_library(quickjs
     core/malloc.c
     core/shape.c
     core/parser.c
-    core/convertion.c
+    core/conversion.c
     core/runtime.c
     core/module.c
     core/ic.c
@@ -56,9 +56,6 @@ add_library(quickjs
     core/builtins/js-string.c
     core/builtins/js-symbol.c
     core/builtins/js-typed-array.c
-
-    # misc
-    core/misc/debug.c
 )
 
 # create a custom target for including headers
@@ -74,18 +71,6 @@ target_link_libraries(quickjs quickjs_rs)
 set(QUICKJS_VERSION STRING "0.1.0")
 
 add_compile_options(${COMPILE_FLAGS})
-
-# Debug on release
-if (CONFIG_DEBUG_ON_RELEASE)
-    add_compile_definitions(CONFIG_DEBUG_ON_RELEASE)
-endif()
-
-# Debug on release
-if (CONFIG_DEBUG_ON_RELEASE)
-    target_compile_options(quickjs PUBLIC
-        -DCONFIG_DEBUG_ON_RELEASE
-    )
-endif()
 
 target_compile_options(quickjs PUBLIC
     -D_GNU_SOURCE

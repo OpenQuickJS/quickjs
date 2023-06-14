@@ -29,7 +29,7 @@
 #include "builtins/js-object.h"
 #include "builtins/js-operator.h"
 #include "builtins/js-proxy.h"
-#include "convertion.h"
+#include "conversion.h"
 #include "exception.h"
 #include "function.h"
 #include "gc.h"

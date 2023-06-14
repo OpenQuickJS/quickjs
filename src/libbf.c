@@ -33,7 +33,7 @@
 #endif
 
 #include "mimalloc.h"
-#include "core/convertion.h"
+#include "core/conversion.h"
 #include "quickjs/cutils.h"
 #include "quickjs/libbf.h"
 

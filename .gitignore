@@ -18,3 +18,5 @@ cmake-build-*
 lib/
 bin/
 build/
+test262/
+test262*.txt

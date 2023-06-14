@@ -11,4 +11,4 @@ cd test262
 # patch -p1 < ../tests/test262.patch
 cd ..
 touch test262_errors.txt
-./bin/run-test262 -m -c test262.conf -a
+./bin/run-test262 -m -c tests/test262.conf -a

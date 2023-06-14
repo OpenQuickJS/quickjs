@@ -58,12 +58,6 @@ sudo apt install lldb # Ubuntu
 
 If you're using VSCode, you can use the `C/C++` and `Code LLDB` extension to debug.
 
-Pass this argument to cmake enable debug log on release build.
-
-```
--DCONFIG_DEBUG_ON_RELEASE=1
-```
-
 ### Tests
 
 ```bash

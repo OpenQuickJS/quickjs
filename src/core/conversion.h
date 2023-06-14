@@ -24,8 +24,8 @@
  * THE SOFTWARE.
  */
 
-#ifndef QUICKJS_CONVERTION_H
-#define QUICKJS_CONVERTION_H
+#ifndef QUICKJS_CONVERSION_H
+#define QUICKJS_CONVERSION_H
 
 #include "quickjs/quickjs.h"
 #include "quickjs/cutils.h"

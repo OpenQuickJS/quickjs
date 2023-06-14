@@ -33,7 +33,7 @@
 #include "builtins/js-object.h"
 #include "builtins/js-operator.h"
 #include "builtins/js-regexp.h"
-#include "convertion.h"
+#include "conversion.h"
 #include "exception.h"
 #include "gc.h"
 #include "module.h"

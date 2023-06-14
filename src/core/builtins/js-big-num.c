@@ -25,7 +25,7 @@
  */
 
 #include "js-big-num.h"
-#include "../convertion.h"
+#include "../conversion.h"
 #include "../exception.h"
 #include "../function.h"
 #include "../object.h"

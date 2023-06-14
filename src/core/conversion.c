@@ -24,7 +24,7 @@
  * THE SOFTWARE.
  */
 
-#include "convertion.h"
+#include "conversion.h"
 #include "builtins/js-big-num.h"
 #include "exception.h"
 #include "function.h"
