@@ -91,4 +91,5 @@ target_compile_options(quickjs PUBLIC
     -D_GNU_SOURCE
     -DCONFIG_BIGNUM
     -DCONFIG_VERSION=${\"QUICKJS_VERSION\"}
+    # -DDUMP_LEAKS # dump memory leaks
 )

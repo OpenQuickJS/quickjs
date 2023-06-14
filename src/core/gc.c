@@ -530,9 +530,9 @@ void add_gc_object(JSRuntime* rt, JSGCObjectHeader* h, JSGCObjectTypeEnum type) 
   h->mark = 0;
   h->gc_obj_type = type;
 
-  // TODO: monitor new created object
-  // print_gc_object(&rt->gc_obj_list);
-  // printf("stack: %s", get_backtrace());
+#ifdef DUMP_LEAKS
+  record_gc_object_creation(&h->link);
+#endif
 
   list_add_tail(&h->link, &rt->gc_obj_list);
 }
@@ -595,6 +595,7 @@ void JS_MarkContext(JSRuntime* rt, JSContext* ctx, JS_MarkFunc* mark_func) {
   JS_MarkValue(rt, ctx->async_iterator_proto, mark_func);
   JS_MarkValue(rt, ctx->promise_ctor, mark_func);
   JS_MarkValue(rt, ctx->array_ctor, mark_func);
+  JS_MarkValue(rt, ctx->string_ctor, mark_func);
   JS_MarkValue(rt, ctx->regexp_ctor, mark_func);
   JS_MarkValue(rt, ctx->function_ctor, mark_func);
   JS_MarkValue(rt, ctx->function_proto, mark_func);
@@ -734,6 +735,9 @@ void gc_scan_incref_child(JSRuntime* rt, JSGCObjectHeader* p) {
     /* ref_count was 0: remove from tmp_obj_list and add at the
        end of gc_obj_list */
     list_del(&p->link);
+#ifdef DUMP_LEAKS
+    record_gc_object_creation(&p->link);
+#endif
     list_add_tail(&p->link, &rt->gc_obj_list);
     p->mark = 0; /* reset the mark for the next GC call */
   }

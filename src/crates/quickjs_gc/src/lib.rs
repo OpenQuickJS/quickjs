@@ -3,6 +3,8 @@
 mod record;
 
 use std::mem::offset_of;
+use crate::record::{get_gc_object_backtrace_map};
+use quickjs_common::backtrace::Backtrace;
 
 /// Represents a node in a doubly linked list.
 /// Used to keep track of garbage-collected objects.
@@ -73,6 +75,21 @@ impl JSGCObjectHeader {
             self.dummy2
         );
     }
+
+    /// Prints the GC object details in a formatted output, along with its backtrace if provided.
+    pub fn print_with_backtrace(&self, bt: Option<&Backtrace>) {
+        let gc_obj_type_name = get_gc_obj_type_name(&self.gc_obj_type());
+        println!(
+            "{:?} {:<10} {:<20} {:<10} {:<10} {:<10} {:<30}",
+            self as *const _,
+            self.ref_count,
+            gc_obj_type_name,
+            self.mark(),
+            self.dummy1,
+            self.dummy2,
+            bt.map_or("N/A".to_string(), |b| format!("{:?}", b)),
+        );
+    }
 }
 
 /// Function that prints a GC object
@@ -101,29 +118,40 @@ pub unsafe extern "C" fn print_gc_object(gc_object: *mut JSGCObjectHeader) {
 /// and that the list of GC objects is properly initialized.
 #[no_mangle]
 pub unsafe extern "C" fn print_gc_objects(list_head: *mut ListHead) {
-    // In C, it's common to use a dummy head node for circular linked lists
-    // iterate it by starting from the next node of the dummy head node
-    let mut cur_node = unsafe { &mut *list_head }.next();
+    let mut cur_node = (*list_head).next();
+    let map = get_gc_object_backtrace_map().lock().unwrap();
+    let mut with_backtrace = 0;
+    let mut without_backtrace = 0;
+
     println!(
-        "{:<10} {:<10} {:<20} {:<10} {:<10} {:<10}",
-        "Node", "RefCount", "GC_Obj_Type", "Mark", "Dummy1", "Dummy2"
+        "{:<10} {:<10} {:<20} {:<10} {:<10} {:<10} {:<30}",
+        "Node", "RefCount", "GC_Obj_Type", "Mark", "Dummy1", "Dummy2", "Backtrace"
     );
 
     let mut index: i32 = 0;
-    loop {
+    while cur_node as *const _ != list_head {
         index += 1;
-        unsafe {
-            let gc_object = (cur_node as *mut ListHead as *mut u8)
-                .offset(-(offset_of!(JSGCObjectHeader, link) as isize))
-                as *mut JSGCObjectHeader;
-            (*gc_object).print();
+        let gc_object = (cur_node as *mut ListHead as *mut u8)
+            .offset(-(offset_of!(JSGCObjectHeader, link) as isize))
+            as *mut JSGCObjectHeader;
+
+        match map.get(&(gc_object as *const _)) {
+            Some(bt) => {
+                (*gc_object).print_with_backtrace(Some(bt));
+                with_backtrace += 1;
+            }
+            None => {
+                (*gc_object).print_with_backtrace(None);
+                without_backtrace += 1;
+            }
         }
-        cur_node = cur_node.next();
-        if cur_node as *const _ == list_head {
-            break;
-        }
+        cur_node = (*cur_node).next();
     }
+
     println!("\nTotal Nodes: {}", index);
+    println!("Total with backtrace: {}", with_backtrace);
+    println!("Total without backtrace: {}", without_backtrace);
+    println!("Total GC-tracked Objects With Backtrace: {}", map.len());
 }
 
 /// Returns a string representation of the given GC object type.

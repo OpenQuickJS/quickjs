@@ -242,6 +242,11 @@ no_inline int resize_properties(JSContext* ctx, JSShape** psh, JSObject* p, uint
     list_del(&old_sh->header.link);
     /* copy all the fields and the properties */
     memcpy(sh, old_sh, sizeof(JSShape) + sizeof(sh->prop[0]) * old_sh->prop_count);
+
+#ifdef DUMP_LEAKS
+    record_gc_object_creation(&sh->header.link);
+#endif
+
     list_add_tail(&sh->header.link, &ctx->rt->gc_obj_list);
     new_hash_mask = new_hash_size - 1;
     sh->prop_hash_mask = new_hash_mask;
@@ -260,10 +265,20 @@ no_inline int resize_properties(JSContext* ctx, JSShape** psh, JSObject* p, uint
     sh_alloc = js_realloc(ctx, get_alloc_from_shape(sh), get_shape_size(new_hash_size, new_size));
     if (unlikely(!sh_alloc)) {
       /* insert again in the GC list */
+
+#ifdef DUMP_LEAKS
+      record_gc_object_creation(&sh->header.link);
+#endif
+
       list_add_tail(&sh->header.link, &ctx->rt->gc_obj_list);
       return -1;
     }
     sh = get_shape_from_alloc(sh_alloc, new_hash_size);
+
+#ifdef DUMP_LEAKS
+    record_gc_object_creation(&sh->header.link);
+#endif
+
     list_add_tail(&sh->header.link, &ctx->rt->gc_obj_list);
   }
   *psh = sh;
@@ -299,6 +314,11 @@ int compact_properties(JSContext* ctx, JSObject* p) {
   sh = get_shape_from_alloc(sh_alloc, new_hash_size);
   list_del(&old_sh->header.link);
   memcpy(sh, old_sh, sizeof(JSShape));
+
+#ifdef DUMP_LEAKS
+  record_gc_object_creation(&sh->header.link);
+#endif
+
   list_add_tail(&sh->header.link, &ctx->rt->gc_obj_list);
 
   memset(prop_hash_end(sh) - new_hash_size, 0, sizeof(prop_hash_end(sh)[0]) * new_hash_size);

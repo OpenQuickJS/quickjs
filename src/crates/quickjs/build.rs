@@ -1,6 +1,7 @@
 use std::env;
 use std::path::PathBuf;
 use std::process::Command;
+use std::fs;
 
 fn main() {
     env::set_var("RUST_BACKTRACE", "1");
@@ -9,6 +10,11 @@ fn main() {
 
     let home_dir = env::var("HOME").expect("HOME environment variable not found.");
     let cbindgen_bin_path = PathBuf::from(&home_dir).join(".cargo/bin/cbindgen");
+
+    // Check if cbindgen is installed
+    if !fs::metadata(&cbindgen_bin_path).is_ok() {
+        panic!("cbindgen not installed, use `cargo install --force cbindgen` to install cbindgen first.");
+    }
 
     let output = Command::new(cbindgen_bin_path)
         .current_dir(&working_dir)

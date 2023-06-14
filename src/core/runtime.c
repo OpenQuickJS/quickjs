@@ -2669,10 +2669,10 @@ void JS_FreeRuntime(JSRuntime* rt) {
     if (count != 0)
       printf("Secondary object leaks: %d\n", count);
   }
-#endif
-  // Fixme: find the reason why there still some objects not freed
-  // print_gc_objects(&rt->gc_obj_list);
 
+  // print leaked objects backtrace
+  print_gc_objects(&rt->gc_obj_list);
+#endif
   assert(list_empty(&rt->gc_obj_list));
 
   /* free the classes */
@@ -2827,11 +2827,13 @@ JSContext* JS_NewContextRaw(JSRuntime* rt) {
   ctx->fp_env.prec = 113;
   ctx->fp_env.flags = bf_set_exp_bits(15) | BF_RNDN | BF_FLAG_SUBNORMAL;
 #endif
+  // clean up the context
   for (i = 0; i < rt->class_count; i++)
     ctx->class_proto[i] = JS_NULL;
   ctx->array_ctor = JS_NULL;
   ctx->regexp_ctor = JS_NULL;
   ctx->promise_ctor = JS_NULL;
+  ctx->string_ctor = JS_NULL;
   init_list_head(&ctx->loaded_modules);
 
   JS_AddIntrinsicBasicObjects(ctx);
@@ -2932,6 +2934,7 @@ void JS_FreeContext(JSContext* ctx) {
   JS_FreeValue(ctx, ctx->async_iterator_proto);
   JS_FreeValue(ctx, ctx->promise_ctor);
   JS_FreeValue(ctx, ctx->array_ctor);
+  JS_FreeValue(ctx, ctx->string_ctor);
   JS_FreeValue(ctx, ctx->regexp_ctor);
   JS_FreeValue(ctx, ctx->function_ctor);
   JS_FreeValue(ctx, ctx->function_proto);

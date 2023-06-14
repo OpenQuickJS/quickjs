@@ -1,58 +1,34 @@
+use std::collections::HashMap;
 use std::mem::offset_of;
-use backtrace::Backtrace;
-use crate::{JSGCObjectHeader, ListHead, print_gc_objects};
+use std::sync::{Mutex, Once};
+use quickjs_common::backtrace::Backtrace;
+use crate::{JSGCObjectHeader, ListHead};
 
-// Global GC objects map
-lazy_static::lazy_static! {
-    static ref GC_OBJECTS: Mutex<HashMap<*const JSGCObjectHeader, Backtrace>> = Mutex::new(HashMap::new());
-}
+// Define a global static Once variable and a static mutable option of the Mutexed HashMap
+static INIT: Once = Once::new();
+static mut GC_OBJECTS: Option<Mutex<HashMap<*const JSGCObjectHeader, Backtrace>>> = None;
 
-/// Records the creation of a new GC object in the global map.
-///
-/// # Safety
-///
-/// This function is `unsafe` because it takes a raw pointer.
-/// The caller must ensure that `gc_object` is a valid pointer.
-#[no_mangle]
-pub unsafe extern "C" fn record_gc_object_creation(gc_object: *mut JSGCObjectHeader) {
-    let bt = Backtrace::new();
-    GC_OBJECTS.lock().unwrap().insert(gc_object, bt);
-}
-
-/// Prints the details of leaked GC objects, if any.
-#[no_mangle]
-pub extern "C" fn get_leaked_gc_objects() {
+// Function to safely initialize and get a reference to the global
+// HashMap storing garbage-collected objects and their backtraces.
+pub fn get_gc_object_backtrace_map() -> &'static Mutex<HashMap<*const JSGCObjectHeader, Backtrace>> {
     unsafe {
-        print_gc_objects(list_head);
-
-        // Leverage the `print_gc_objects` function to access each object
-        // in the list, and compare it with the objects in the map.
-        let map = GC_OBJECTS.lock().unwrap();
-        for (&gc_object, bt) in map.iter() {
-            if !is_in_list(list_head, gc_object) {
-                // This object is not in the list, so it must be leaked.
-                println!("Leaked GC object at address {:?} with backtrace:\n{:?}", gc_object, bt);
-            }
-        }
+        INIT.call_once(|| {
+            GC_OBJECTS = Some(Mutex::new(HashMap::new()));
+        });
+        GC_OBJECTS.as_ref().unwrap()
     }
 }
 
-/// Checks if the given GC object is in the list.
-///
-/// # Safety
-///
-/// This function is `unsafe` because it takes a raw pointer and dereferences it.
-/// The caller must ensure that both `list_head` and `gc_object` are valid pointers.
-unsafe fn is_in_list(list_head: *mut ListHead, gc_object: *const JSGCObjectHeader) -> bool {
-    let mut cur_node = (*list_head).next();
-    while cur_node as *const _ != list_head {
-        let cur_gc_object = (cur_node as *mut ListHead as *mut u8)
-            .offset(-(offset_of!(JSGCObjectHeader, link) as isize))
-            as *mut JSGCObjectHeader;
-        if cur_gc_object == gc_object {
-            return true;
-        }
-        cur_node = (*cur_node).next();
-    }
-    false
+// This function records the creation of a garbage-collected object.
+// It takes a raw pointer to the object and stores it along with a
+// backtrace in a global HashMap.
+#[no_mangle]
+pub unsafe extern "C" fn record_gc_object_creation(gc_object_link: *mut ListHead) {
+    // Convert the pointer to the 'link' field back to a pointer to the encompassing struct
+    let gc_object = (gc_object_link as *mut u8)
+        .offset(-(offset_of!(JSGCObjectHeader, link) as isize))
+        as *mut JSGCObjectHeader;
+
+    let bt = Backtrace::new();
+    get_gc_object_backtrace_map().lock().unwrap().insert(gc_object, bt);
 }
