@@ -10,7 +10,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     container:
-      image: openquickjs/quickjs-testing-env:latest
+      image: ghcr.io/openquickjs/quickjs-testing-env:latest
 
     steps:
       - uses: actions/checkout@v3
