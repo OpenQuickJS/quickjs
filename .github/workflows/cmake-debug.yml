@@ -2,51 +2,57 @@ name: Build Debug target
 
 on:
   push:
-    branches: ["main"]
+    branches: [ "main" ]
   pull_request:
-    branches: ["main"]
+    branches: [ "main" ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
-        with:
-          submodules: recursive
+    - uses: actions/checkout@v3
+      with:
+        submodules: recursive
 
-      - name: Setup Rust
-        uses: actions-rs/toolchain@v1
-        with:
-          profile: minimal
-          toolchain: nightly
-          override: true
+    - name: Cache dependencies
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.cargo
+          ~/.ninja
+        key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
 
-      - name: Install cbindgen
-        run: cargo install --force cbindgen
+    - name: Setup Rust
+      run: |
+        if ! command -v rustup &> /dev/null
+        then
+          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+          . $HOME/.cargo/env
+          rustup default nightly
+        fi
 
-      - name: Cache dependencies
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/.cargo/bin
-            ~/.ninja
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+    - name: Install cbindgen
+      run: |
+        if ! command -v cbindgen &> /dev/null
+        then
+          cargo install --force cbindgen
+        fi
 
-      - name: Install Ninja
-        run: |
-          if [ ! -d "$HOME/.ninja" ]; then
-            mkdir $HOME/.ninja
-            curl -L https://github.com/ninja-build/ninja/releases/download/v1.10.2/ninja-linux.zip -o $HOME/.ninja/ninja.zip
-            unzip $HOME/.ninja/ninja.zip -d $HOME/.ninja
-            echo "$HOME/.ninja" >> $GITHUB_PATH
-          fi
+    - name: Install Ninja
+      run: |
+        if [ ! -d "$HOME/.ninja" ]; then
+          mkdir $HOME/.ninja
+          curl -L https://github.com/ninja-build/ninja/releases/download/v1.10.2/ninja-linux.zip -o $HOME/.ninja/ninja.zip
+          unzip $HOME/.ninja/ninja.zip -d $HOME/.ninja
+          echo "$HOME/.ninja" >> $GITHUB_PATH
+        fi
 
-      - name: Configure CMake
-        run: cmake -G Ninja -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=Debug
+    - name: Configure CMake
+      run: cmake -G Ninja -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=Debug
 
-      - name: Build target
-        run: cmake --build ${{github.workspace}}/build --target qjs run-test262 -j 8
+    - name: Build target
+      run: cmake --build ${{github.workspace}}/build --target qjs run-test262 -j 8
 
-      - name: Test
-        run: ./bin/qjs -e 'console.log("Hello, World!")'
+    - name: Test
+      run: ./bin/qjs -e 'console.log("Hello, World!")'
