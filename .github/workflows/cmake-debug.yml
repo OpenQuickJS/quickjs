@@ -2,27 +2,51 @@ name: Build Debug target
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    container:
-      image: ghcr.io/openquickjs/quickjs-testing-env:latest
 
     steps:
-    - uses: actions/checkout@v3
-      with:
-        submodules: recursive
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
 
-    - name: Configure CMake
-      run: cmake -G Ninja -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=Debug
+      - name: Setup Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: nightly
+          override: true
 
-    - name: Build target
-      run: cmake --build ${{github.workspace}}/build --target qjs run-test262 -j 8
+      - name: Install cbindgen
+        run: cargo install --force cbindgen
 
-    - name: Test
-      run: ./bin/qjs -e 'console.log("Hello, World!")'
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cargo/bin
+            ~/.ninja
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
 
+      - name: Install Ninja
+        run: |
+          if [ ! -d "$HOME/.ninja" ]; then
+            mkdir $HOME/.ninja
+            curl -L https://github.com/ninja-build/ninja/releases/download/v1.10.2/ninja-linux.zip -o $HOME/.ninja/ninja.zip
+            unzip $HOME/.ninja/ninja.zip -d $HOME/.ninja
+            echo "$HOME/.ninja" >> $GITHUB_PATH
+          fi
+
+      - name: Configure CMake
+        run: cmake -G Ninja -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=Debug
+
+      - name: Build target
+        run: cmake --build ${{github.workspace}}/build --target qjs run-test262 -j 8
+
+      - name: Test
+        run: ./bin/qjs -e 'console.log("Hello, World!")'
