@@ -73,6 +73,12 @@ add_executable(qjs
 )
 target_link_libraries(qjs quickjs ${LINK_LIBRARIES} mimalloc-static)
 
+# build qbc (new quickjs bytecode compiler)
+add_executable(qbc
+        src/cli/qbc.c
+)
+target_link_libraries(qbc quickjs ${LINK_LIBRARIES} mimalloc-static)
+
 # build run-test262 (quickjs test262 runner)
 add_executable(run-test262
         src/cli/run-test262.c
